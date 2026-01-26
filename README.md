@@ -16,7 +16,7 @@ Mobile Software Engineer with 3 years of commercial experience, programming sinc
   - AI-generated notes from audio, text, and images
   - Interactive flashcards with spaced repetition
   - Cross-platform synchronization
-  - Technologies: React Native, Flutter, Kotlin, Swift, TypeScript, Node.js, AI/ML APIs
+  - Technologies: React Native, Expo, Kotlin, Swift, TypeScript, Node.js, AI/ML APIs
 
 ### Intern @ Software Mansion / SWM
 
@@ -60,7 +60,7 @@ Platform for managing amateur and semi-professional football leagues with both w
 
 ### Development Skills
 
-- **Mobile:** React Native, Expo, Flutter, Kotlin, Swift
+- **Mobile:** React Native, Expo, Kotlin, Swift
 - **Web:** React, Next.js, TypeScript
 
 ## Contact

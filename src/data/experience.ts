@@ -34,7 +34,6 @@ export const experiences: ExperienceItem[] = [
     ],
     technologies: [
       "React Native",
-      "Flutter",
       "TypeScript",
       "Kotlin",
       "Swift",
@@ -59,7 +58,6 @@ export const experiences: ExperienceItem[] = [
         ],
         technologies: [
           "React Native",
-          "Flutter",
           "Kotlin",
           "Swift",
           "TypeScript",
