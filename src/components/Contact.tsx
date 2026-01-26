@@ -8,7 +8,7 @@ export default function Contact() {
     { icon: Github, href: "https://github.com/jkasprzyk17", label: "GitHub" },
     {
       icon: Linkedin,
-      href: "https://www.linkedin.com/in/jakub-kasprzyk/",
+      href: "https://www.linkedin.com/in/jkasprzyk17/",
       label: "LinkedIn",
     },
     {

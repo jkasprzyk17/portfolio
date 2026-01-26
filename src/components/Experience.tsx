@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 import { experiences } from "@/data/experience";
 
 export default function Experience() {
@@ -71,9 +72,21 @@ export default function Experience() {
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                       {experience.title}
                     </h3>
-                    <p className="text-lg text-blue-600 dark:text-blue-400 font-semibold">
-                      {experience.company}
-                    </p>
+                    {experience.companyUrl ? (
+                      <a
+                        href={experience.companyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-lg text-blue-600 dark:text-blue-400 font-semibold hover:underline inline-flex items-center gap-1.5 transition-colors"
+                      >
+                        {experience.company}
+                        <ExternalLink size={14} className="flex-shrink-0" />
+                      </a>
+                    ) : (
+                      <p className="text-lg text-blue-600 dark:text-blue-400 font-semibold">
+                        {experience.company}
+                      </p>
+                    )}
                     <p className="text-gray-600 dark:text-gray-400">
                       {experience.location}
                     </p>
@@ -112,9 +125,21 @@ export default function Experience() {
                             />
                           </div>
                         )}
-                        <h5 className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                          {project.name}
-                        </h5>
+                        {project.url ? (
+                          <a
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-lg font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5 transition-colors"
+                          >
+                            {project.name}
+                            <ExternalLink size={14} className="flex-shrink-0" />
+                          </a>
+                        ) : (
+                          <h5 className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                            {project.name}
+                          </h5>
+                        )}
                       </div>
                       <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm">
                         {project.description}

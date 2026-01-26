@@ -2,6 +2,7 @@ export interface ExperienceItem {
   id: string;
   title: string;
   company: string;
+  companyUrl?: string;
   location: string;
   period: string;
   description: string[];
@@ -9,6 +10,7 @@ export interface ExperienceItem {
   companyLogo?: string;
   projects?: {
     name: string;
+    url?: string;
     description: string;
     features: string[];
     technologies: string[];
@@ -21,6 +23,7 @@ export const experiences: ExperienceItem[] = [
     id: "1",
     title: "Mobile Software Engineer",
     company: "App Magic",
+    companyUrl: "https://appmagic.io",
     location: "Remote",
     period: "Oct 2025 – Present",
     companyLogo: "/images/appmagic-logo.png",
@@ -42,6 +45,7 @@ export const experiences: ExperienceItem[] = [
     projects: [
       {
         name: "TapNote",
+        url: "https://tapnote.app",
         logo: "/images/tapnote-icon.png",
         description:
           "AI-powered note-taking and study application available on iOS and Android. The app helps students and professionals organize their learning with intelligent AI assistance and interactive study tools.",
@@ -70,6 +74,7 @@ export const experiences: ExperienceItem[] = [
     id: "2",
     title: "Intern",
     company: "Software Mansion / SWM",
+    companyUrl: "https://swmansion.com",
     location: "Kraków, PL",
     period: "Mar 2025 – Apr 2025",
     companyLogo: "/images/swm-logo.png",
@@ -89,6 +94,7 @@ export const experiences: ExperienceItem[] = [
     projects: [
       {
         name: "Radon IDE",
+        url: "https://radon.swmansion.com/",
         logo: "/images/radon-logo.png",
         description:
           "Radon IDE is an innovative VSCode/Cursor extension that transforms standard code editors into fully-featured Integrated Development Environments specifically designed for React Native and Expo development. The extension provides comprehensive tooling, debugging capabilities, and workflow enhancements that streamline the mobile development process.",
@@ -114,6 +120,7 @@ export const experiences: ExperienceItem[] = [
     id: "3",
     title: "Mobile Software Engineer",
     company: "MMLab Cloud / MyMusic",
+    companyUrl: "https://mymusic.pl",
     location: "Kraków, PL",
     period: "Dec 2022 – Dec 2025",
     companyLogo: "/images/mymusic-logo.png",
@@ -135,6 +142,7 @@ export const experiences: ExperienceItem[] = [
     projects: [
       {
         name: "MUGO",
+        url: "https://mugo.pl",
         logo: "/images/mugo-logo.png",
         description:
           "Global music distribution and artist promotion platform for independent artists. Enables musicians to distribute their music to major streaming platforms worldwide while providing powerful promotion tools and analytics.",
@@ -158,6 +166,7 @@ export const experiences: ExperienceItem[] = [
       },
       {
         name: "JustWin",
+        url: "https://justwin.pl",
         logo: "/images/justwin-logo.png",
         description:
           "Gamified mobile application featuring user engagement and challenge-based features. Creates an engaging experience through interactive challenges, rewards, and social competition.",

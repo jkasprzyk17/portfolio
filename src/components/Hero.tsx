@@ -9,7 +9,7 @@ export default function Hero() {
     { icon: Github, href: "https://github.com/jkasprzyk17", label: "GitHub" },
     {
       icon: Linkedin,
-      href: "https://www.linkedin.com/in/jakub-kasprzyk/",
+      href: "https://www.linkedin.com/in/jkasprzyk17/",
       label: "LinkedIn",
     },
     {
@@ -126,14 +126,14 @@ export default function Hero() {
               <span className="font-semibold text-gray-900 dark:text-white">
                 Mobile Software Engineer
               </span>{" "}
-              with 3.5 years of commercial experience, based in{" "}
+              with 3 years of commercial experience, based in{" "}
               <span className="font-semibold text-gray-900 dark:text-white">
                 Kraków, PL
               </span>
-              . I&apos;ve been programming since I was 15, and I&apos;m passionate about
-              building innovative mobile applications that make a difference. I
-              love working with React Native, Expo, and modern mobile
-              technologies to create seamless user experiences.
+              . I&apos;ve been programming since I was 15, and I&apos;m
+              passionate about building innovative mobile applications that make
+              a difference. I love working with React Native, Expo, and modern
+              mobile technologies to create seamless user experiences.
             </motion.p>
 
             <motion.div
