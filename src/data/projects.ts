@@ -44,4 +44,31 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/jkasprzyk17",
     // Add app store links when available
   },
+  {
+    id: "2",
+    title: "Łatwa Ustna",
+    category: "personal",
+    image: "/images/latwaustna-icon.png",
+    liveUrl: "https://latwaustna.pl/",
+    description:
+      "AI-powered training platform that helps Polish high school students prepare for the oral matura exam by simulating the exam commission and providing instant, criteria-based feedback.",
+    longDescription:
+      "Łatwa Ustna is a web-based SaaS that lets maturzyści practice the Polish oral matura exam anytime. Students answer randomized official CKE questions by voice, the AI plays the role of the examination commission with follow-up questions, and each session ends with a scored breakdown, strengths, weaknesses, and a tailored improvement plan. A separate module analyzes written essays against official matura criteria.",
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Supabase",
+      "Stripe",
+      "OpenAI API",
+    ],
+    features: [
+      "All 76 official CKE oral exam questions with filtering by period, literature, and theme",
+      "Voice-based AI commission that asks follow-up questions like a real exam",
+      "Instant scoring with criteria breakdown, strengths, weaknesses, and improvement plan",
+      "Essay analysis module using official matura criteria (up to 35 points)",
+      "Progress tracking across mastered and challenging questions",
+      "Browser-based with mobile microphone support — no installation required",
+    ],
+  },
 ];
