@@ -91,7 +91,16 @@ export default function Hero() {
           >
             MUGO
           </a>{" "}
-          and JustWin.
+          and{" "}
+          <a
+            href="https://justwin.pl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="prose-link"
+          >
+            JustWin
+          </a>
+          .
         </p>
         <p>
           On the side I&apos;m building{" "}
