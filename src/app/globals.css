@@ -3,70 +3,74 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --bg-2: #f6f6f5;
+  --fg: #111110;
+  --fg-2: #5a5955;
+  --fg-3: #8e8d87;
+  --line: #e6e5e0;
+  --accent: #2563eb;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme="dark"] {
+  --bg: #0b0b0a;
+  --bg-2: #141413;
+  --fg: #ededeb;
+  --fg-2: #a3a29a;
+  --fg-3: #6c6b62;
+  --line: #232220;
+  --accent: #6ea1ff;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  
-  .animate-spin-slow {
-    animation: spin 8s linear infinite;
-  }
+::selection {
+  background: var(--fg);
+  color: var(--bg);
 }
 
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
-
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--bg);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 5px;
+  background: var(--line);
+  border-radius: 0;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--fg-3);
 }
 
-/* Gradient text animation */
-@keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+  .hairline { border-color: var(--line); }
 
-.gradient-text {
-  background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-shift 3s ease infinite;
+  .prose-link {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color 200ms ease, color 200ms ease;
+  }
+  .prose-link:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
 }

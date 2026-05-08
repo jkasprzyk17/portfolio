@@ -11,7 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Jakub Kasprzyk",
   description:
-    "Jakub Kasprzyk - Mobile Software Engineer specializing in React Native, Expo. Based in Kraków, PL.",
+    "Jakub Kasprzyk, Mobile Software Engineer building with React Native and Expo. Based in Kraków, PL.",
   keywords: [
     "mobile developer",
     "react native",
@@ -24,13 +24,26 @@ export const metadata: Metadata = {
   },
 };
 
+const themeInit = `
+(function() {
+  try {
+    var t = localStorage.getItem('theme');
+    if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
         <Analytics />

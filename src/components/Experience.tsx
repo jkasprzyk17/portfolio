@@ -1,192 +1,80 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { experiences } from "@/data/experience";
 
-export default function Experience() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+const ease = [0.65, 0, 0.35, 1] as const;
 
-  const itemVariants = {
-    hidden: { opacity: 0, x: -30 },
-    visible: { opacity: 1, x: 0 },
-  };
-
+function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <section
-      id="experience"
-      className="py-20 px-4 sm:px-6 lg:px-8"
-    >
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Work Experience
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400">
-            My professional journey and the projects I&apos;ve worked on.
-          </p>
-        </motion.div>
+    <h2 className="text-[13px] tracking-[0.04em] uppercase text-fg-3 mb-6">
+      {children}
+    </h2>
+  );
+}
 
-        <motion.div
-          className="space-y-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {experiences.map((experience) => (
-            <motion.div
-              key={experience.id}
-              variants={itemVariants}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
-                <div className="flex items-start gap-4">
-                  {experience.companyLogo && (
-                    <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-white dark:bg-gray-700 p-2">
-                      <Image
-                        src={experience.companyLogo}
-                        alt={`${experience.company} logo`}
-                        fill
-                        className="object-contain"
-                        sizes="64px"
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                      {experience.title}
-                    </h3>
-                    {experience.companyUrl ? (
+export default function Experience() {
+  return (
+    <section id="experience" className="py-14 border-t hairline">
+      <SectionHeading>work</SectionHeading>
+
+      <motion.ul
+        initial={{ opacity: 0, y: 6 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.4, ease }}
+        className="space-y-7"
+      >
+        {experiences.map((exp) => (
+          <li key={exp.id} className="text-[15px] leading-6">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+              <div className="flex flex-wrap items-baseline gap-x-2 text-fg">
+                <span className="font-medium">{exp.title}</span>
+                <span className="text-fg-3">·</span>
+                {exp.companyUrl ? (
+                  <a
+                    href={exp.companyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="prose-link inline-flex items-center gap-0.5"
+                  >
+                    {exp.company}
+                    <ArrowUpRight size={12} className="opacity-60" />
+                  </a>
+                ) : (
+                  <span>{exp.company}</span>
+                )}
+              </div>
+              <span className="text-fg-3 text-[13px] tabular-nums">
+                {exp.period}
+              </span>
+            </div>
+
+            {exp.projects && exp.projects.length > 0 && (
+              <p className="text-fg-2 text-[14px] mt-1">
+                {exp.projects.map((p, i) => (
+                  <span key={p.name}>
+                    {i > 0 && <span className="text-fg-3">, </span>}
+                    {p.url ? (
                       <a
-                        href={experience.companyUrl}
+                        href={p.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-lg text-blue-600 dark:text-blue-400 font-semibold hover:underline inline-flex items-center gap-1.5 transition-colors"
+                        className="prose-link"
                       >
-                        {experience.company}
-                        <ExternalLink size={14} className="flex-shrink-0" />
+                        {p.name}
                       </a>
                     ) : (
-                      <p className="text-lg text-blue-600 dark:text-blue-400 font-semibold">
-                        {experience.company}
-                      </p>
+                      p.name
                     )}
-                    <p className="text-gray-600 dark:text-gray-400">
-                      {experience.location}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-gray-500 dark:text-gray-500 text-sm mt-2 sm:mt-0">
-                  {experience.period}
-                </span>
-              </div>
-
-              <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400 mb-6">
-                {experience.description.map((item, index) => (
-                  <li key={index}>{item}</li>
+                  </span>
                 ))}
-              </ul>
-
-              {experience.projects && experience.projects.length > 0 && (
-                <div className="mt-6 space-y-6 border-t border-gray-200 dark:border-gray-700 pt-6">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    Key Projects:
-                  </h4>
-                  {experience.projects.map((project, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4"
-                    >
-                      <div className="flex items-center gap-3 mb-2">
-                        {project.logo && (
-                          <div className="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-white dark:bg-gray-600 p-1.5">
-                            <Image
-                              src={project.logo}
-                              alt={`${project.name} logo`}
-                              fill
-                              className="object-contain"
-                              sizes="48px"
-                            />
-                          </div>
-                        )}
-                        {project.url ? (
-                          <a
-                            href={project.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-lg font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5 transition-colors"
-                          >
-                            {project.name}
-                            <ExternalLink size={14} className="flex-shrink-0" />
-                          </a>
-                        ) : (
-                          <h5 className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                            {project.name}
-                          </h5>
-                        )}
-                      </div>
-                      <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm">
-                        {project.description}
-                      </p>
-                      {project.features && project.features.length > 0 && (
-                        <div className="mb-3">
-                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Key Features:
-                          </p>
-                          <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                            {project.features.map((feature, fIdx) => (
-                              <li key={fIdx}>{feature}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {project.technologies.map((tech) => (
-                          <span
-                            key={tech}
-                            className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-xs font-medium"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {experience.technologies && (
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {experience.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-full text-xs font-medium"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+              </p>
+            )}
+          </li>
+        ))}
+      </motion.ul>
     </section>
   );
 }

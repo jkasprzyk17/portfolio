@@ -41,8 +41,7 @@ export const projects: Project[] = [
       "Web dashboard for administrators",
       "Mobile app for iOS and Android",
     ],
-    githubUrl: "https://github.com/jkasprzyk17",
-    // Add app store links when available
+    liveUrl: "https://miniliga.app",
   },
   {
     id: "2",
@@ -51,9 +50,9 @@ export const projects: Project[] = [
     image: "/images/latwaustna-icon.png",
     liveUrl: "https://latwaustna.pl/",
     description:
-      "AI-powered training platform that helps Polish high school students prepare for the oral matura exam by simulating the exam commission and providing instant, criteria-based feedback.",
+      "AI-powered training platform that helps Polish high school students prepare for the written and oral matura exam by simulating the exam commission and providing instant, criteria-based feedback.",
     longDescription:
-      "Łatwa Ustna is a web-based SaaS that lets maturzyści practice the Polish oral matura exam anytime. Students answer randomized official CKE questions by voice, the AI plays the role of the examination commission with follow-up questions, and each session ends with a scored breakdown, strengths, weaknesses, and a tailored improvement plan. A separate module analyzes written essays against official matura criteria.",
+      "Łatwa Ustna is a web-based SaaS that lets maturzyści practice both the written and oral Polish matura anytime. For the oral exam, students answer randomized official CKE questions by voice and the AI plays the role of the examination commission with follow-up questions, ending each session with a scored breakdown, strengths, weaknesses, and a tailored improvement plan. For the written part, a separate module analyzes essays against the official matura criteria.",
     technologies: [
       "Next.js",
       "TypeScript",
