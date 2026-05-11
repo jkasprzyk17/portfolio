@@ -114,6 +114,11 @@ export default function Hero() {
           </a>
           , an AI tutor that helps Polish students prepare for the written and oral matura exam.
         </p>
+        <p>
+          <a href="/cv.pdf" className="prose-link" download>
+            Download my CV ↓
+          </a>
+        </p>
       </m.div>
     </section>
   );
