@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { experiences } from "@/data/experience";
 
@@ -19,7 +19,7 @@ export default function Experience() {
     <section id="experience" className="py-14 border-t hairline">
       <SectionHeading>work</SectionHeading>
 
-      <motion.ul
+      <m.ul
         initial={{ opacity: 0, y: 6 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
@@ -74,7 +74,7 @@ export default function Experience() {
             )}
           </li>
         ))}
-      </motion.ul>
+      </m.ul>
     </section>
   );
 }

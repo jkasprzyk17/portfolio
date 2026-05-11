@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "motion/react";
 
 const ease = [0.65, 0, 0.35, 1] as const;
 
@@ -19,7 +19,7 @@ export default function Contact() {
         contact
       </h2>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 6 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
@@ -43,7 +43,7 @@ export default function Contact() {
           ))}
           .
         </p>
-      </motion.div>
+      </m.div>
 
       <p className="mt-10 text-[12px] text-fg-3">
         © {year} Jakub Kasprzyk · Kraków, PL

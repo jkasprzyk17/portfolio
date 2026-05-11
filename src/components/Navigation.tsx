@@ -38,17 +38,14 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-14 text-[14px]">
           <div className="flex items-center gap-5 sm:gap-7">
             {navItems.map((item) => (
-              <a
+              <button
                 key={item.name}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(item.href);
-                }}
+                type="button"
+                onClick={() => scrollToSection(item.href)}
                 className="text-fg-2 hover:text-fg transition-colors"
               >
                 {item.name}
-              </a>
+              </button>
             ))}
           </div>
 

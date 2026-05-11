@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "motion/react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { projects } from "@/data/projects";
 
@@ -13,7 +13,7 @@ export default function Projects() {
         projects
       </h2>
 
-      <motion.ul
+      <m.ul
         initial={{ opacity: 0, y: 6 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
@@ -61,7 +61,7 @@ export default function Projects() {
             </li>
           );
         })}
-      </motion.ul>
+      </m.ul>
     </section>
   );
 }

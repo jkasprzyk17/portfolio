@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "motion/react";
 import Image from "next/image";
 
 const ease = [0.65, 0, 0.35, 1] as const;
@@ -8,7 +8,7 @@ const ease = [0.65, 0, 0.35, 1] as const;
 export default function Hero() {
   return (
     <section id="home" className="pt-16 pb-14">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease }}
@@ -22,18 +22,18 @@ export default function Hero() {
           priority
           className="rounded-full ring-1 ring-line"
         />
-      </motion.div>
+      </m.div>
 
-      <motion.h1
+      <m.h1
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease, delay: 0.05 }}
         className="text-3xl sm:text-4xl font-semibold tracking-tight text-fg mb-5"
       >
         hey, I&apos;m Jakub <span className="inline-block">👋</span>
-      </motion.h1>
+      </m.h1>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease, delay: 0.12 }}
@@ -114,7 +114,7 @@ export default function Hero() {
           </a>
           , an AI tutor that helps Polish students prepare for the written and oral matura exam.
         </p>
-      </motion.div>
+      </m.div>
     </section>
   );
 }
