@@ -24,10 +24,21 @@ export default function Contact() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
         transition={{ duration: 0.4, ease }}
-        className="text-[15px] leading-7 text-fg-2"
+        className="text-[15px] leading-7 text-fg-2 space-y-3"
       >
         <p>
-          Drop me a line on{" "}
+          Email me at{" "}
+          <a href="mailto:kasprzykjakub@proton.me" className="prose-link">
+            kasprzykjakub@proton.me
+          </a>{" "}
+          or call{" "}
+          <a href="tel:+48535462019" className="prose-link">
+            +48 535 462 019
+          </a>
+          .
+        </p>
+        <p>
+          You can also reach me on{" "}
           {links.map((l, i) => (
             <span key={l.href}>
               {i > 0 && (i === links.length - 1 ? " or " : ", ")}
