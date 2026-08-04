@@ -70,6 +70,39 @@ body {
   background: var(--fg-3);
 }
 
+/* Printing is how /cv becomes a PDF, so force the light palette regardless of
+   the active theme and drop anything that only makes sense on screen. */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  html[data-theme="dark"] {
+    --bg: #ffffff;
+    --bg-2: #ffffff;
+    --fg: #111110;
+    --fg-2: #3f3e3a;
+    --fg-3: #6b6a65;
+    --line: #d8d7d2;
+    --accent: #111110;
+    color-scheme: light;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .prose-link {
+    text-decoration: none;
+  }
+}
+
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }

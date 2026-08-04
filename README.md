@@ -89,6 +89,12 @@ Platform for managing amateur and semi-professional football leagues with both w
 - **Mobile:** React Native, Expo, Kotlin, Swift
 - **Web:** React, Next.js, TypeScript
 
+## 🎓 Education
+
+### Software Development Technician @ [Zespół Szkół Elektrycznych nr 1](https://www.zsel1.pl/)
+
+**2021 – 2026** | Kraków, PL
+
 ## Contact
 
 Jakub Kasprzyk
