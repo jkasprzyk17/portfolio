@@ -24,6 +24,7 @@ export default function Navigation() {
   const navItems = [
     { name: "home", href: "#home" },
     { name: "work", href: "#experience" },
+    { name: "oss", href: "#open-source" },
     { name: "projects", href: "#projects" },
     { name: "contact", href: "#contact" },
   ];
@@ -54,7 +55,7 @@ export default function Navigation() {
               href="https://github.com/jkasprzyk17"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-fg transition-colors"
+              className="hidden sm:block hover:text-fg transition-colors"
               aria-label="GitHub"
             >
               <Github size={16} />
@@ -63,7 +64,7 @@ export default function Navigation() {
               href="https://x.com/jkasprzyk17"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-fg transition-colors"
+              className="hidden sm:block hover:text-fg transition-colors"
               aria-label="Twitter"
             >
               <Twitter size={16} />
@@ -72,7 +73,7 @@ export default function Navigation() {
               href="https://www.linkedin.com/in/jkasprzyk17/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-fg transition-colors"
+              className="hidden sm:block hover:text-fg transition-colors"
               aria-label="LinkedIn"
             >
               <Linkedin size={16} />

@@ -40,10 +40,40 @@ export default function Hero() {
         className="space-y-4 text-[15.5px] leading-7 text-fg-2"
       >
         <p>
-          I&apos;m a Mobile Software Engineer based in Kraków, building
-          cross-platform apps with{" "}
+          I&apos;m a 20-year-old Mobile Software Engineer based in Kraków,
+          building cross-platform apps with{" "}
           <span className="text-fg">React Native</span> and{" "}
           <span className="text-fg">Expo</span>. Currently at{" "}
+          <a
+            href="https://www.gmi.software"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="prose-link"
+          >
+            GMI software
+          </a>
+          , where I also work on our open-source native modules —{" "}
+          <a
+            href="https://github.com/gmi-software/react-native-better-maps"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="prose-link"
+          >
+            react-native-better-maps
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://github.com/gmi-software/react-native-better-clustering"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="prose-link"
+          >
+            react-native-better-clustering
+          </a>
+          .
+        </p>
+        <p>
+          Previously at{" "}
           <a
             href="https://appmagic.io"
             target="_blank"
@@ -51,11 +81,17 @@ export default function Hero() {
             className="prose-link"
           >
             App Magic
+          </a>{" "}
+          shipping{" "}
+          <a
+            href="https://tapnote.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="prose-link"
+          >
+            TapNote
           </a>
-          , shipping AI-powered mobile products.
-        </p>
-        <p>
-          Previously at{" "}
+          , at{" "}
           <a
             href="https://swmansion.com"
             target="_blank"

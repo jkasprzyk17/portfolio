@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
+import OpenSource from "@/components/OpenSource";
 import Experience from "@/components/Experience";
 import Contact from "@/components/Contact";
 import Navigation from "@/components/Navigation";
@@ -18,6 +19,7 @@ export default function Home() {
       <div className="max-w-2xl mx-auto px-5 sm:px-6">
         <Hero />
         <Experience />
+        <OpenSource />
         <Projects />
         <Contact />
       </div>

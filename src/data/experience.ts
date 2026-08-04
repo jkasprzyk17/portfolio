@@ -20,12 +20,66 @@ export interface ExperienceItem {
 
 export const experiences: ExperienceItem[] = [
   {
+    id: "4",
+    title: "Mobile Software Engineer",
+    company: "GMI software",
+    companyUrl: "https://www.gmi.software",
+    location: "Remote",
+    period: "Jun 2026 – Present",
+    description: [
+      "Building cross-platform mobile applications with React Native and the New Architecture",
+      "Authoring and maintaining open-source native modules built on Nitro Modules",
+      "Working across the native layer in Swift, Kotlin, and C++ to improve rendering performance",
+    ],
+    technologies: [
+      "React Native",
+      "TypeScript",
+      "Nitro Modules",
+      "Swift",
+      "Kotlin",
+      "C++",
+      "Expo",
+    ],
+    projects: [
+      {
+        name: "react-native-better-maps",
+        url: "https://github.com/gmi-software/react-native-better-maps",
+        description:
+          "High-performance maps for React Native built on Nitro Modules and the New Architecture, backed by MapKit on iOS and Google Maps on Android.",
+        features: [
+          "Native MapKit and Google Maps rendering through Nitro Modules",
+          "Built for the New Architecture with no bridge overhead",
+          "Fully typed API surface",
+        ],
+        technologies: [
+          "React Native",
+          "Nitro Modules",
+          "Swift",
+          "Kotlin",
+          "TypeScript",
+        ],
+      },
+      {
+        name: "react-native-better-clustering",
+        url: "https://github.com/gmi-software/react-native-better-clustering",
+        description:
+          "A faster drop-in replacement for react-native-map-clustering with the same MapView API and a C++ supercluster engine underneath.",
+        features: [
+          "Drop-in replacement — same MapView API as react-native-map-clustering",
+          "C++ supercluster engine for clustering large marker sets",
+          "Runs off the JS thread via Nitro Modules",
+        ],
+        technologies: ["React Native", "Nitro Modules", "C++", "TypeScript"],
+      },
+    ],
+  },
+  {
     id: "1",
     title: "Mobile Software Engineer",
     company: "App Magic",
     companyUrl: "https://appmagic.io",
     location: "Remote",
-    period: "Oct 2025 – Present",
+    period: "Oct 2025 – Mar 2026",
     companyLogo: "/images/appmagic-logo.png",
     description: [
       "Developing and maintaining cross-platform mobile applications for iOS and Android",

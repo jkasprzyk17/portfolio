@@ -2,15 +2,27 @@
 
 ## 👨‍💻 About
 
-Mobile Software Engineer with 3 years of commercial experience, programming since age 15. Specializing in React Native, Expo, and cross-platform mobile development. Based in Kraków, Poland.
+Mobile Software Engineer with 4 years of commercial experience, programming since age 15. Specializing in React Native, Expo, and cross-platform mobile development. Based in Kraków, Poland.
 
-**Technologies:** React Native, Expo, TypeScript, Kotlin, Swift, Node.js
+**Technologies:** React Native, Expo, TypeScript, Kotlin, Swift, C++, Node.js
 
 ## 💼 Work Experience
 
+### Mobile Software Engineer @ GMI software
+
+**Jun 2026 – Present** | Remote
+
+- **react-native-better-maps** - High-performance maps built on Nitro Modules and the New Architecture
+  - Native MapKit (iOS) and Google Maps (Android) rendering
+  - Technologies: React Native, Nitro Modules, Swift, Kotlin, TypeScript
+
+- **react-native-better-clustering** - Drop-in replacement for react-native-map-clustering
+  - C++ supercluster engine, same MapView API
+  - Technologies: React Native, Nitro Modules, C++, TypeScript
+
 ### Mobile Software Engineer @ App Magic
 
-**Oct 2025 – Present** | Remote
+**Oct 2025 – Mar 2026** | Remote
 
 - **TapNote** - AI-powered note-taking and study app (iOS & Android)
   - AI-generated notes from audio, text, and images
@@ -40,6 +52,20 @@ Mobile Software Engineer with 3 years of commercial experience, programming sinc
   - Challenge-based gamification system
   - User engagement and social features
   - Technologies: React Native, Kotlin, Swift, TypeScript, Firebase, REST APIs, CI/CD
+
+## 📦 Open Source
+
+### react-native-better-maps
+
+[npm](https://www.npmjs.com/package/react-native-better-maps) · [GitHub](https://github.com/gmi-software/react-native-better-maps)
+
+High-performance maps for React Native built on Nitro Modules and the New Architecture, backed by MapKit on iOS and Google Maps on Android.
+
+### react-native-better-clustering
+
+[npm](https://www.npmjs.com/package/react-native-better-clustering) · [GitHub](https://github.com/gmi-software/react-native-better-clustering)
+
+A faster drop-in replacement for react-native-map-clustering with the same MapView API and a C++ supercluster engine underneath.
 
 ## 🚀 Own Projects
 
