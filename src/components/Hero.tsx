@@ -52,7 +52,7 @@ export default function Hero() {
           >
             GMI software
           </a>
-          , where I also work on our open-source native modules —{" "}
+          , where I also work on our open-source native modules:{" "}
           <a
             href="https://github.com/gmi-software/react-native-better-maps"
             target="_blank"
@@ -60,8 +60,8 @@ export default function Hero() {
             className="prose-link"
           >
             react-native-better-maps
-          </a>{" "}
-          and{" "}
+          </a>
+          ,{" "}
           <a
             href="https://github.com/gmi-software/react-native-better-clustering"
             target="_blank"
@@ -69,6 +69,24 @@ export default function Hero() {
             className="prose-link"
           >
             react-native-better-clustering
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://github.com/gmi-software/react-native-better-pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="prose-link"
+          >
+            react-native-better-pdf
+          </a>
+          . I&apos;ve landed a{" "}
+          <a
+            href="https://github.com/react/react-native/pull/59190"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="prose-link"
+          >
+            fix in React Native core
           </a>
           .
         </p>

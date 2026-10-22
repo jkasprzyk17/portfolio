@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { experiences } from "@/data/experience";
 import { libraries } from "@/data/libraries";
+import { contributions } from "@/data/contributions";
 import { projects } from "@/data/projects";
 import { education } from "@/data/education";
 import PrintButton from "./PrintButton";
 
 export const metadata: Metadata = {
-  title: "CV — Jakub Kasprzyk",
+  title: "CV · Jakub Kasprzyk",
   description:
     "Curriculum vitae of Jakub Kasprzyk, Mobile Software Engineer based in Kraków.",
   robots: { index: false },
@@ -30,13 +31,13 @@ function Section({
   );
 }
 
-// First sentence, keeping its own full stop — descriptions in the data files
+// First sentence, keeping its own full stop. Descriptions in the data files
 // are sometimes one sentence and sometimes several.
 function firstSentence(text: string) {
   return text.match(/^.*?\.(?=\s|$)/)?.[0] ?? text;
 }
 
-// "Radon IDE — Radon IDE is an innovative…" reads badly next to the name, so
+// "Radon IDE: Radon IDE is an innovative…" reads badly next to the name, so
 // drop the subject when the description repeats it.
 function summarise(name: string, description: string) {
   const sentence = firstSentence(description);
@@ -145,7 +146,7 @@ export default function CV() {
                         ) : (
                           <span className="font-medium text-fg">{p.name}</span>
                         )}
-                        {" — "}
+                        {": "}
                         {summarise(p.name, p.description)}
                       </span>
                     </li>
@@ -179,6 +180,22 @@ export default function CV() {
                 right={lib.tags.slice(0, 2).join(" · ")}
               />
               <p className="mt-1 text-fg-2 text-pretty">{lib.description}</p>
+            </li>
+          ))}
+          {contributions.map((c) => (
+            <li key={c.id} className="break-inside-avoid">
+              <Row
+                left={
+                  <a
+                    href={c.url}
+                    className="prose-link font-mono text-[13px] font-medium"
+                  >
+                    {c.project}
+                  </a>
+                }
+                right={`merged · ${c.date}`}
+              />
+              <p className="mt-1 text-fg-2 text-pretty">{c.title}</p>
             </li>
           ))}
         </ul>

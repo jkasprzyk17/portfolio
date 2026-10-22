@@ -65,11 +65,48 @@ export const experiences: ExperienceItem[] = [
         description:
           "A faster drop-in replacement for react-native-map-clustering with the same MapView API and a C++ supercluster engine underneath.",
         features: [
-          "Drop-in replacement — same MapView API as react-native-map-clustering",
+          "Drop-in replacement with the same MapView API as react-native-map-clustering",
           "C++ supercluster engine for clustering large marker sets",
           "Runs off the JS thread via Nitro Modules",
         ],
         technologies: ["React Native", "Nitro Modules", "C++", "TypeScript"],
+      },
+      {
+        name: "react-native-better-pdf",
+        url: "https://github.com/gmi-software/react-native-better-pdf",
+        description:
+          "A native, virtualized PDF viewer for React Native built on Nitro Views, using PDFKit on iOS and the platform PdfRenderer on Android.",
+        features: [
+          "Scrolling, zooming, rendering and prefetching run natively, with no JS in the frame path",
+          "Memory bounded by the viewport through page virtualization and a render cache",
+          "Search, text selection, links, AcroForm filling and printing",
+          "Several documents shown as one with source={[a, b, c]}",
+        ],
+        technologies: [
+          "React Native",
+          "Nitro Views",
+          "Swift",
+          "Kotlin",
+          "TypeScript",
+        ],
+      },
+      {
+        name: "react-native-pay",
+        url: "https://github.com/gmi-software/react-native-pay",
+        description:
+          "Apple Pay and Google Pay for React Native behind one type-safe API, built on Nitro Modules.",
+        features: [
+          "Shared payment request and result model across both platforms",
+          "Native Apple Pay and Google Pay buttons",
+          "Expo config plugin",
+        ],
+        technologies: [
+          "React Native",
+          "Nitro Modules",
+          "Swift",
+          "Kotlin",
+          "TypeScript",
+        ],
       },
     ],
   },

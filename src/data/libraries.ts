@@ -27,4 +27,30 @@ export const libraries: Library[] = [
     npmUrl: "https://www.npmjs.com/package/react-native-better-clustering",
     tags: ["Nitro Modules", "C++", "TypeScript"],
   },
+  {
+    id: "3",
+    name: "react-native-better-pdf",
+    description:
+      "A native, virtualized PDF viewer for React Native built on Nitro Views, using PDFKit on iOS and the platform PdfRenderer on Android, with no WebView and no bundled PDFium.",
+    githubUrl: "https://github.com/gmi-software/react-native-better-pdf",
+    npmUrl: "https://www.npmjs.com/package/react-native-better-pdf",
+    tags: ["Nitro Views", "Swift", "Kotlin", "TypeScript"],
+  },
+  {
+    id: "4",
+    name: "@gmisoftware/react-native-pay",
+    description:
+      "Apple Pay and Google Pay for React Native behind one type-safe API, with native payment buttons and an Expo config plugin.",
+    githubUrl: "https://github.com/gmi-software/react-native-pay",
+    npmUrl: "https://www.npmjs.com/package/@gmisoftware/react-native-pay",
+    tags: ["Nitro Modules", "Swift", "Kotlin", "TypeScript"],
+  },
+  {
+    id: "5",
+    name: "better-skills",
+    description:
+      "Agent Skills that teach AI coding agents to use GMI's React Native libraries and react-native-maps.",
+    githubUrl: "https://github.com/gmi-software/better-skills",
+    tags: ["Agent Skills", "AI tooling"],
+  },
 ];

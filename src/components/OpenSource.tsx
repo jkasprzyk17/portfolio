@@ -3,6 +3,7 @@
 import { m } from "motion/react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { libraries } from "@/data/libraries";
+import { contributions } from "@/data/contributions";
 
 const ease = [0.65, 0, 0.35, 1] as const;
 
@@ -57,6 +58,27 @@ export default function OpenSource() {
             </li>
           );
         })}
+        {contributions.map((contribution) => (
+          <li key={contribution.id} className="text-[15px] leading-6">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+              <a
+                href={contribution.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="prose-link inline-flex items-center gap-1 font-mono text-[14px] text-fg font-medium"
+              >
+                {contribution.project}
+                <ArrowUpRight size={13} className="opacity-60" />
+              </a>
+              <span className="text-fg-3 text-[13px]">
+                merged · {contribution.date}
+              </span>
+            </div>
+            <p className="text-fg-2 text-[14px] mt-1 text-pretty">
+              {contribution.title}
+            </p>
+          </li>
+        ))}
       </m.ul>
     </section>
   );

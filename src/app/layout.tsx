@@ -35,14 +35,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "profile",
     siteName: "Jakub Kasprzyk",
-    title: "Jakub Kasprzyk — Mobile Software Engineer",
+    title: "Jakub Kasprzyk · Mobile Software Engineer",
     description,
     url: "/",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jakub Kasprzyk — Mobile Software Engineer",
+    title: "Jakub Kasprzyk · Mobile Software Engineer",
     description,
     creator: "@jkasprzyk17",
   },

@@ -7,10 +7,19 @@ export interface EducationItem {
   period: string;
 }
 
+// School names are proper nouns kept in Polish, like Kraków and Łatwa Ustna
+// elsewhere.
 export const education: EducationItem[] = [
   {
+    id: "2",
+    school: "Politechnika Krakowska",
+    schoolUrl: "https://www.pk.edu.pl/",
+    field: "Bachelor of Engineering in Applied Computer Science",
+    location: "Kraków, PL",
+    period: "2026 – Present",
+  },
+  {
     id: "1",
-    // Proper noun kept in Polish, like Kraków and Łatwa Ustna elsewhere.
     school: "Zespół Szkół Elektrycznych nr 1",
     schoolUrl: "https://www.zsel1.pl/",
     field: "Software Development Technician",
