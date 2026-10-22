@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
-import MotionProvider from "@/components/MotionProvider";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
-
-// Vercel exposes the stable production domain at build time; falls back to the
-// dev server so relative metadata URLs still resolve locally.
-const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "http://localhost:3000";
 
 const description =
   "Jakub Kasprzyk, Mobile Software Engineer building with React Native and Expo. Based in Kraków, PL.";
@@ -66,11 +59,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        {/* A plain inline script so it runs before <body> paints. next/script's
+            beforeInteractive only queues it until the Next runtime boots, so
+            dark-mode visitors saw the light theme first on a slow load. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <Script id="theme-init" strategy="beforeInteractive">
-          {themeInit}
-        </Script>
-        <MotionProvider>{children}</MotionProvider>
+        {children}
         <Analytics />
       </body>
     </html>

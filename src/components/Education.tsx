@@ -1,10 +1,5 @@
-"use client";
-
-import { m } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { education } from "@/data/education";
-
-const ease = [0.65, 0, 0.35, 1] as const;
 
 export default function Education() {
   return (
@@ -13,13 +8,7 @@ export default function Education() {
         education
       </h2>
 
-      <m.ul
-        initial={{ opacity: 0, y: 6 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, ease }}
-        className="space-y-6"
-      >
+      <ul className="rise-on-scroll space-y-6">
         {education.map((item) => (
           <li key={item.id} className="text-[15px] leading-6">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4">
@@ -46,7 +35,7 @@ export default function Education() {
             </div>
           </li>
         ))}
-      </m.ul>
+      </ul>
     </section>
   );
 }

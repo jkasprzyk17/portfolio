@@ -1,19 +1,11 @@
-"use client";
-
-import { m } from "motion/react";
 import Image from "next/image";
 
-const ease = [0.65, 0, 0.35, 1] as const;
-
+// CSS entrance (.rise-in) rather than a JS one: the text has to be readable
+// before any JavaScript arrives, not server-rendered at opacity 0.
 export default function Hero() {
   return (
     <section id="home" className="pt-16 pb-14">
-      <m.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease }}
-        className="mb-8"
-      >
+      <div className="rise-in mb-8">
         <Image
           src="/images/profile.jpg"
           alt="Jakub Kasprzyk"
@@ -22,22 +14,18 @@ export default function Hero() {
           priority
           className="rounded-full ring-1 ring-line"
         />
-      </m.div>
+      </div>
 
-      <m.h1
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease, delay: 0.05 }}
-        className="text-3xl sm:text-4xl font-semibold tracking-tight text-fg mb-5"
+      <h1
+        style={{ animationDelay: "60ms" }}
+        className="rise-in text-3xl sm:text-4xl font-semibold tracking-tight text-fg mb-5"
       >
         hey, I&apos;m Jakub <span className="inline-block">👋</span>
-      </m.h1>
+      </h1>
 
-      <m.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease, delay: 0.12 }}
-        className="space-y-4 text-[15.5px] leading-7 text-fg-2"
+      <div
+        style={{ animationDelay: "120ms" }}
+        className="rise-in space-y-4 text-[15.5px] leading-7 text-fg-2"
       >
         <p>
           I&apos;m a 20-year-old Mobile Software Engineer based in Kraków,
@@ -173,7 +161,7 @@ export default function Hero() {
             View my CV →
           </a>
         </p>
-      </m.div>
+      </div>
     </section>
   );
 }

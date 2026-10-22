@@ -1,6 +1,9 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  // Emits hover: variants inside @media (hover: hover) and (pointer: fine), so
+  // a tap on a touch screen doesn't leave the hover style stuck on.
+  future: { hoverOnlyWhenSupported: true },
   darkMode: ["selector", '[data-theme="dark"]'],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",

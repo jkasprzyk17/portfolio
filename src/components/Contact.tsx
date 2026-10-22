@@ -1,8 +1,7 @@
 "use client";
 
-import { m } from "motion/react";
-
-const ease = [0.65, 0, 0.35, 1] as const;
+// Still a client component for the footer year alone: as a server component
+// on this static page it would freeze at the year of the last build.
 
 const links = [
   { label: "Twitter", href: "https://x.com/jkasprzyk17" },
@@ -19,13 +18,7 @@ export default function Contact() {
         contact
       </h2>
 
-      <m.div
-        initial={{ opacity: 0, y: 6 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, ease }}
-        className="text-[15px] leading-7 text-fg-2 space-y-3"
-      >
+      <div className="rise-on-scroll text-[15px] leading-7 text-fg-2 space-y-3">
         <p>
           Email me at{" "}
           <a href="mailto:kasprzykjakub@proton.me" className="prose-link">
@@ -54,7 +47,7 @@ export default function Contact() {
           ))}
           .
         </p>
-      </m.div>
+      </div>
 
       <p className="mt-10 text-[12px] text-fg-3">
         © {year} Jakub Kasprzyk · Kraków, PL

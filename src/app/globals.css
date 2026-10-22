@@ -10,6 +10,10 @@
   --fg-3: #8e8d87;
   --line: #e6e5e0;
   --accent: #2563eb;
+
+  /* Strong ease-out (Emil Kowalski's): starts fast, so motion reads as instant
+     feedback. Every entering or pressed element uses it. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 [data-theme="dark"] {
@@ -103,7 +107,98 @@ body {
   }
 }
 
+/* Entrance animation that needs no JS. Only `from` is given, so the element
+   animates into its own resting state. If CSS loads but JS never does (slow
+   phone on venue wifi), content still appears instead of sitting at the
+   opacity: 0 a JS-driven animation would have server-rendered. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The same entrance, scrubbed by scroll position for sections below the fold.
+   No duration in the shorthand (auto fills the range), and the timeline and
+   range come after it because `animation:` resets both. The range is in px,
+   not %, so a tall list is revealed over ~100px of scroll rather than only
+   once half of it is on screen; 40px stands in for the old -40px margin.
+   Browsers without scroll timelines skip the block and just show the content.
+   Unlike the old once-only reveal, scrolling back up replays it. */
+@supports (animation-timeline: view()) {
+  .rise-on-scroll {
+    animation: rise-in var(--ease-out) both;
+    animation-timeline: view();
+    animation-range: entry 40px entry 140px;
+  }
+}
+
+/* Reduced motion means gentler, not none: keep the fade that bridges content
+   appearing, drop the movement. !important is needed to beat the global rule
+   above, which would cut these to 0.01ms and break the scroll
+   timeline outright. Stagger delays are dropped too; everything fades at once. */
+@media (prefers-reduced-motion: reduce) {
+  .rise-in {
+    animation: fade-in 250ms var(--ease-out) both !important;
+  }
+
+  .rise-on-scroll {
+    animation-name: fade-in !important;
+    animation-duration: auto !important;
+  }
+}
+
+/* Two stacked icons that crossfade: the outgoing one shrinks and blurs while
+   the incoming one resolves. The blur hides the instant both are half
+   visible, so it reads as one icon changing rather than two swapping. */
+.icon-swap {
+  display: inline-grid;
+}
+
+.icon-swap > * {
+  grid-area: 1 / 1;
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    filter 200ms var(--ease-out);
+}
+
+.icon-swap > [data-hidden],
+:root:not([data-theme="dark"]) .icon-swap > [data-shown-in="dark"],
+:root[data-theme="dark"] .icon-swap > [data-shown-in="light"] {
+  opacity: 0;
+  transform: scale(0.8);
+  filter: blur(2px);
+}
+
 @layer utilities {
+  .rise-in {
+    animation: rise-in 400ms var(--ease-out) both;
+  }
+
+  /* Press feedback: the element dips on :active so a tap visibly lands.
+     --press-scale stays in the 0.95–0.98 range; larger surfaces want the
+     subtler end. Never combine with .rise-in on the same element: that
+     animation's fill holds `transform` and would swallow the press. */
+  .pressable {
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 160ms var(--ease-out),
+      color 150ms ease,
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .pressable:active {
+    transform: scale(var(--press-scale, 0.97));
+  }
+
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
   .hairline { border-color: var(--line); }
@@ -116,8 +211,12 @@ body {
     text-underline-offset: 3px;
     transition: text-decoration-color 200ms ease, color 200ms ease;
   }
-  .prose-link:hover {
-    color: var(--accent);
-    text-decoration-color: var(--accent);
+  /* Gated like the hover: variants (see tailwind.config.ts): links here open
+     in a new tab, and on a phone the tapped one came back stuck in accent. */
+  @media (hover: hover) and (pointer: fine) {
+    .prose-link:hover {
+      color: var(--accent);
+      text-decoration-color: var(--accent);
+    }
   }
 }

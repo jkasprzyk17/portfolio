@@ -1,10 +1,5 @@
-"use client";
-
-import { m } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { experiences } from "@/data/experience";
-
-const ease = [0.65, 0, 0.35, 1] as const;
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
@@ -19,13 +14,7 @@ export default function Experience() {
     <section id="experience" className="py-14 border-t hairline">
       <SectionHeading>work</SectionHeading>
 
-      <m.ul
-        initial={{ opacity: 0, y: 6 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, ease }}
-        className="space-y-7"
-      >
+      <ul className="rise-on-scroll space-y-7">
         {experiences.map((exp) => (
           <li key={exp.id} className="text-[15px] leading-6">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4">
@@ -74,7 +63,7 @@ export default function Experience() {
             )}
           </li>
         ))}
-      </m.ul>
+      </ul>
     </section>
   );
 }

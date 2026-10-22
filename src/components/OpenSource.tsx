@@ -1,11 +1,6 @@
-"use client";
-
-import { m } from "motion/react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { libraries } from "@/data/libraries";
 import { contributions } from "@/data/contributions";
-
-const ease = [0.65, 0, 0.35, 1] as const;
 
 export default function OpenSource() {
   return (
@@ -14,13 +9,7 @@ export default function OpenSource() {
         open source
       </h2>
 
-      <m.ul
-        initial={{ opacity: 0, y: 6 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, ease }}
-        className="space-y-6"
-      >
+      <ul className="rise-on-scroll space-y-6">
         {libraries.map((library) => {
           const primary = library.npmUrl || library.githubUrl;
           return (
@@ -79,7 +68,7 @@ export default function OpenSource() {
             </p>
           </li>
         ))}
-      </m.ul>
+      </ul>
     </section>
   );
 }

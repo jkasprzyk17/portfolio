@@ -1,24 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Github, Linkedin, Twitter, Sun, Moon } from "lucide-react";
 
 export default function Navigation() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const current = (document.documentElement.getAttribute("data-theme") ||
-      "light") as "light" | "dark";
-    setTheme(current);
-    setMounted(true);
-  }, []);
-
+  // The theme lives only on <html data-theme>: the toggle reads it at click
+  // time and the icons follow it in CSS (.icon-swap), so there is no React
+  // copy to sync and no wrong icon before hydration.
   const toggle = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
+    const root = document.documentElement;
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);
-    setTheme(next);
   };
 
   const navItems = [
@@ -79,16 +71,15 @@ export default function Navigation() {
               <Linkedin size={16} />
             </a>
             <button
+              type="button"
               onClick={toggle}
               aria-label="Toggle theme"
               className="hover:text-fg transition-colors"
-              suppressHydrationWarning
             >
-              {mounted && theme === "dark" ? (
-                <Sun size={16} />
-              ) : (
-                <Moon size={16} />
-              )}
+              <span className="icon-swap">
+                <Moon size={16} data-shown-in="light" />
+                <Sun size={16} data-shown-in="dark" />
+              </span>
             </button>
           </div>
         </div>

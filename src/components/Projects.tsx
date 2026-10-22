@@ -1,10 +1,5 @@
-"use client";
-
-import { m } from "motion/react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { projects } from "@/data/projects";
-
-const ease = [0.65, 0, 0.35, 1] as const;
 
 export default function Projects() {
   return (
@@ -13,13 +8,7 @@ export default function Projects() {
         projects
       </h2>
 
-      <m.ul
-        initial={{ opacity: 0, y: 6 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, ease }}
-        className="space-y-6"
-      >
+      <ul className="rise-on-scroll space-y-6">
         {projects.map((project) => {
           const primary = project.liveUrl || project.githubUrl;
           return (
@@ -61,7 +50,7 @@ export default function Projects() {
             </li>
           );
         })}
-      </m.ul>
+      </ul>
     </section>
   );
 }
