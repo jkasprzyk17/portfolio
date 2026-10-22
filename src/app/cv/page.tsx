@@ -21,9 +21,11 @@ function Section({
   title: string;
   children: React.ReactNode;
 }) {
+  // Entries avoid page breaks on their own; a whole section can't, or any
+  // section taller than what's left of a page jumps to the next one.
   return (
-    <section className="mt-8 break-inside-avoid">
-      <h2 className="text-[12px] tracking-[0.08em] uppercase text-fg-3 pb-2 mb-4 border-b hairline">
+    <section className="mt-8">
+      <h2 className="text-[12px] tracking-[0.08em] uppercase text-fg-3 pb-2 mb-4 border-b hairline break-after-avoid">
         {title}
       </h2>
       {children}
