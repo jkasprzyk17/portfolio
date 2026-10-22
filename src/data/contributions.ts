@@ -10,6 +10,14 @@ export interface Contribution {
 // they are merged, so nothing here claims more than the project accepted.
 export const contributions: Contribution[] = [
   {
+    id: "2",
+    project: "react-native",
+    title:
+      "Fixed TextInput placeholders on iOS drawing off-center after a lineHeight was removed or the view was recycled.",
+    url: "https://github.com/react/react-native/pull/59195",
+    date: "Oct 2026",
+  },
+  {
     id: "1",
     project: "react-native",
     title:

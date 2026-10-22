@@ -79,14 +79,14 @@ export default function Hero() {
           >
             react-native-better-pdf
           </a>
-          . I&apos;ve landed a{" "}
+          . I&apos;ve landed{" "}
           <a
-            href="https://github.com/react/react-native/pull/59190"
+            href="https://github.com/react/react-native/commits/main?author=jkasprzyk17"
             target="_blank"
             rel="noopener noreferrer"
             className="prose-link"
           >
-            fix in React Native core
+            fixes in React Native core
           </a>
           .
         </p>
