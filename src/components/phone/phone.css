@@ -113,17 +113,51 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.device__camera {
+/* ───────────── The island ─────────────
+   The front camera's cut-out, sized off the screen and centred in the status
+   bar's height. It is black in either theme, like the hardware it stands
+   for. At rest it does nothing; a notification opens out of it (Island.tsx).
+   The Android skin block reshapes it into a punch-hole. */
+.screen {
+  --island-w: clamp(66px, 29cqw, 98px);
+  --island-h: clamp(20px, 8.4cqw, 28px);
+  --island-top: calc((42px - var(--island-h)) / 2);
+  --island-ink: #050505;
+}
+.island {
   position: absolute;
-  top: 15px;
+  top: var(--island-top);
   left: 50%;
-  width: 11px;
-  height: 11px;
-  margin-left: -5.5px;
-  border-radius: 50%;
-  background: var(--device);
   z-index: 31;
+  width: var(--island-w);
+  height: var(--island-h);
+  margin-left: calc(var(--island-w) / -2);
+  border-radius: 999px;
+  background: var(--island-ink);
   pointer-events: none;
+  /* Switching skins reshapes it rather than swapping it. */
+  transition:
+    width 420ms var(--ease-out),
+    height 420ms var(--ease-out),
+    top 420ms var(--ease-out),
+    margin-left 420ms var(--ease-out),
+    background-color 420ms var(--ease-out);
+}
+/* The lens, off-centre the way the real one is, and above a notification so
+   the island is seen to open around it. */
+.island__lens {
+  position: absolute;
+  top: calc(var(--island-top) + var(--island-h) / 2);
+  left: calc(50% + var(--island-w) * 0.25);
+  z-index: 41;
+  width: calc(var(--island-h) * 0.34);
+  height: calc(var(--island-h) * 0.34);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 34%, #2b3345, #0c0e14 62%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.045);
+  pointer-events: none;
+  transition: opacity 200ms ease;
 }
 
 /* On a phone the visitor is already holding the frame. */
@@ -145,7 +179,6 @@
     box-shadow: none;
   }
   .device__key,
-  .device__camera,
   .device__glare {
     display: none;
   }
@@ -185,13 +218,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-}
-.statusbar__carrier {
-  font-family: var(--font-mono, ui-monospace), monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 .statusbar__bars {
   display: flex;
@@ -331,6 +357,9 @@
   margin-top: 6.5cqw;
 }
 
+/* Only the shape here: on iOS the dock is a pane of glass (see "Liquid
+   glass" below), on Android it has no surface at all. No border in either,
+   so the padding is exactly the gap around the icons. */
 .dock {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -338,11 +367,6 @@
   /* The same gap above the icons as beside them (see --dock-pad). */
   padding: calc(var(--dock-pad) * 1cqw) 0 2.5cqw;
   border-radius: calc(var(--tile-r) * 1cqw);
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
-  /* A hairline that takes no room, so the padding is exactly the gap. */
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 80%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .icon-btn {
@@ -719,6 +743,7 @@
   display: none;
 }
 .chip {
+  --glass-edge: 1px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -896,63 +921,84 @@
   background: var(--bg-2);
   box-shadow: 0 -1px 0 var(--line);
 }
-.scr__bar {
-  flex-shrink: 0;
-  padding: 44px 5cqw 10px;
+/* The navigation bar lies over the top of the page, not above it, so the
+   page scrolls beneath its buttons. Only the buttons take touches: a swipe
+   that starts on the empty bar still scrolls what is under it. */
+.scr {
+  /* Where the bar ends: the status bar's 44px and a row of buttons. */
+  --nav: 80px;
 }
-.scr__nav {
-  display: flex;
+.scr__bar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: grid;
+  /* The small title is centred in whatever is left between the two sides.
+     Each side keeps at least a button's width, so with a back button alone
+     (or nothing) that is the middle of the screen, and a wide set of actions
+     moves it over rather than colliding with it. */
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 34px;
+  column-gap: 8px;
+  height: var(--nav);
+  padding: 44px 5cqw 0;
+  pointer-events: none;
+}
+.scr__lead,
+.scr__actions {
+  display: flex;
+  gap: 6px;
+  min-width: 34px;
+}
+.scr__lead > *,
+.scr__actions > * {
+  pointer-events: auto;
 }
 .scr__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 1px;
-  margin-left: -6px;
-  padding: 4px 8px 4px 2px;
-  border-radius: 8px;
-  font-size: 14px;
-  color: var(--accent);
-  transition: opacity 150ms ease;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--fg);
+  transition: transform 240ms var(--ease-out);
 }
+/* Glass swells a little under the finger rather than shrinking. */
 .scr__back:active {
-  opacity: 0.55;
+  transform: scale(1.12);
 }
-/* The back button carries both platforms' affordances; this is the default
-   one. The Android skin block further down swaps them. */
+/* The back button carries both platforms' glyphs; this is the default one.
+   The Android skin block further down swaps them. */
 .scr__back-ios {
-  display: inline-flex;
-  align-items: center;
-  gap: 1px;
+  /* A chevron's weight is on its right; this centres what the eye sees. */
+  margin-left: -2px;
 }
 .scr__back-android {
   display: none;
 }
-/* A title with actions: they share its row, so the row above stays free and
-   the title sits exactly where it does in every other app. */
-.scr__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 2px;
-}
-.scr__head .scr__title {
+/* The title once the large one has scrolled under the bar. */
+.scr__inline {
   min-width: 0;
-  margin-top: 0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  opacity: 0;
+  translate: 0 5px;
+  transition:
+    opacity 180ms ease,
+    translate 220ms var(--ease-out);
 }
-.scr__actions {
-  flex-shrink: 0;
-  display: flex;
-  gap: 6px;
-  /* Centred on the title without making its row any taller than the title. */
-  margin-block: -4px;
+.scr[data-collapsed] .scr__inline {
+  opacity: 1;
+  translate: 0 0;
 }
 .scr__title {
-  margin-top: 2px;
+  margin-bottom: 16px;
   font-family: var(--font-display, Georgia), serif;
   font-size: 30px;
   line-height: 1.1;
@@ -973,6 +1019,12 @@
   user-select: text;
   -webkit-user-select: text;
   scrollbar-width: none;
+}
+/* Under a bar, the page starts where the bar ends, and anything scrolled
+   into view (a focused link, say) stops short of it. */
+.scr__bar + .scr__body {
+  padding-top: calc(var(--nav) + 4px);
+  scroll-padding-top: var(--nav);
 }
 .scr__body::-webkit-scrollbar {
   display: none;
@@ -1766,6 +1818,55 @@
   overflow: hidden;
 }
 
+/* The same notification on iOS, held by the island. It starts as the island
+   at rest (these sizes) and Island.tsx animates it open. Light on black
+   whatever the theme, so the text colours are pinned here, the way .paper
+   pins its own. */
+.island-notice {
+  --fg: #f4f2ec;
+  --fg-2: #bab7ae;
+  --fg-3: #87847b;
+  position: absolute;
+  top: var(--island-top);
+  left: 50%;
+  z-index: 40;
+  width: var(--island-w);
+  height: var(--island-h);
+  translate: -50% 0;
+  overflow: hidden;
+  /* Concentric with the screen's own corner. One radius at every size: at
+     rest the box is too short for it, which makes its ends fully round, and
+     they ease into this corner as it grows. */
+  border-radius: max(0px, calc(var(--r) - var(--island-top)));
+  background: var(--island-ink);
+  /* A hairline, so it still has an edge over a dark app. */
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 18px 34px -18px rgba(0, 0, 0, 0.7);
+  touch-action: none;
+}
+.island-notice__content {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  /* The open island keeps the margin from the sides that it has from the
+     top. */
+  width: calc(100cqw - 2 * var(--island-top));
+}
+.island-notice .banner__hit {
+  padding: 11px 16px 12px 13px;
+}
+.island-notice[data-still] {
+  width: calc(100cqw - 2 * var(--island-top));
+  height: auto;
+}
+.island-notice[data-still] .island-notice__content {
+  position: static;
+  translate: none;
+  width: auto;
+}
+
 /* ───────────── Long-press menu ───────────── */
 .icon-btn {
   /* A long press is ours: no "save image" sheet, no text selection. */
@@ -1857,10 +1958,175 @@
   color: var(--bg);
 }
 
+/* ───────────── Liquid glass (iOS skin) ─────────────
+   On iOS whatever floats above content is glass: the dock, the buttons in an
+   app's navigation bar, the controls over the map. Never content itself.
+   One material, described once by the variables below and applied by the
+   list of selectors after them; the Android skin never matches any of it.
+
+   The material is a tint, a blur of what's behind, and a rim that catches
+   light at two opposite corners, which is what makes it read as a thick
+   pane rather than a frosted sticker. */
+.screen {
+  --glass-fill: linear-gradient(
+    color-mix(in srgb, #fff 70%, transparent),
+    color-mix(in srgb, #fff 46%, transparent)
+  );
+  --glass-blur: blur(12px) saturate(1.8);
+  --glass-rim: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0.35) 36%,
+    rgba(255, 255, 255, 0.25) 64%,
+    rgba(255, 255, 255, 0.85)
+  );
+  --glass-shadow:
+    0 0 0 0.5px rgba(70, 52, 22, 0.1), 0 1px 2px rgba(70, 52, 22, 0.08),
+    0 10px 22px -12px rgba(70, 52, 22, 0.4);
+}
+:root[data-theme="dark"] .screen {
+  --glass-fill: linear-gradient(
+    color-mix(in srgb, #fff 14%, transparent),
+    color-mix(in srgb, #fff 6%, transparent)
+  );
+  --glass-blur: blur(12px) saturate(1.6) brightness(1.1);
+  --glass-rim: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.08) 36%,
+    rgba(255, 255, 255, 0.04) 64%,
+    rgba(255, 255, 255, 0.3)
+  );
+  --glass-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 22px -12px rgba(0, 0, 0, 0.75);
+}
+
+html:not([data-os="android"])
+  :is(
+    .dock,
+    .chip,
+    .maps__zoom,
+    .scr__back,
+    .scr__actions .pill--quiet,
+    .msg__name
+  ) {
+  border-color: transparent;
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+}
+/* The rim: a 1px ring cut out of a gradient, drawn over the host's own
+   border where it has one (--glass-edge). */
+html:not([data-os="android"])
+  :is(
+    .dock,
+    .chip,
+    .maps__zoom,
+    .scr__back,
+    .scr__actions .pill--quiet,
+    .msg__name
+  )::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--glass-edge, 0px) * -1);
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--glass-rim);
+  /* Everything but the 1px of padding is masked away. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* Something for the rim to be positioned against. (.maps__zoom already is.) */
+html:not([data-os="android"])
+  :is(.dock, .chip, .scr__back, .scr__actions .pill--quiet, .msg__name) {
+  position: relative;
+}
+/* The zoom control clips its buttons to its corners, which would clip a rim
+   drawn over its border too; so on iOS it has no border to draw over. */
+html:not([data-os="android"]) .maps__zoom {
+  border: 0;
+}
+/* Room for the chips' shadow inside the strip that scrolls them. */
+html:not([data-os="android"]) .maps__chips {
+  padding-bottom: 16px;
+}
+
+/* Under the bar the page doesn't stop at an edge: it goes soft and fades
+   out on its way up to the status bar, and the glass buttons sit on that. */
+html:not([data-os="android"]) :is(.scr__bar, .msg__bar)::before {
+  content: "";
+  position: absolute;
+  /* Fully soft down to the bar's lower edge, then letting go over the next
+     24px: nothing behind the small title is sharp enough to read. */
+  inset: 0 0 -24px;
+  z-index: -1;
+  background: linear-gradient(var(--bg) 38%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(#000 77%, transparent);
+  mask-image: linear-gradient(#000 77%, transparent);
+  pointer-events: none;
+}
+html:not([data-os="android"]) .scr__actions .pill {
+  height: 32px;
+  border-radius: 16px;
+}
+/* The CV is a light sheet on a desk, and a blur would smear it grey across
+   the bar. There the bar is the desk itself and the sheet slides under a
+   flat edge, as it does at the bottom. */
+html:not([data-os="android"]) .scr.cv .scr__bar {
+  background: var(--bg-2);
+  transition: box-shadow 200ms ease;
+}
+html:not([data-os="android"]) .scr.cv .scr__bar::before {
+  content: none;
+}
+html:not([data-os="android"]) .scr.cv[data-scrolled] .scr__bar {
+  box-shadow: 0 1px 0 var(--line);
+}
+/* A store page has no bar, but the same soft edge under the status bar. */
+html:not([data-os="android"]) .listing__scrim {
+  height: 62px;
+  background: linear-gradient(var(--bg) 46%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(#000 62%, transparent);
+  mask-image: linear-gradient(#000 62%, transparent);
+}
+
+/* Messages: who you're writing to floats over the thread the same way, the
+   name on a chip of glass. */
+html:not([data-os="android"]) .msg {
+  position: relative;
+}
+html:not([data-os="android"]) .msg__bar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  border-bottom: 0;
+  pointer-events: none;
+}
+html:not([data-os="android"]) .msg__name {
+  padding: 3px 11px;
+  border-radius: 999px;
+}
+html:not([data-os="android"]) .msg__thread {
+  padding-top: 138px;
+}
+
 /* ───────────── Android skin ─────────────
    Chrome only: status bar, icon shape, how you go back, the look of
    controls. To remove it: delete this block, AndroidNav.tsx (and its one use
-   in Phone.tsx), OsToggle.tsx (and its uses in Intro.tsx and page.tsx), and
+   in Phone.tsx), OsToggle.tsx and os.ts (and their uses in Intro.tsx,
+   page.tsx and Banner.tsx, whose drop-in banner is the Android half), and
    the scr__back-android arrow in AppScreen.tsx. */
 .android-nav {
   display: none;
@@ -1908,22 +2174,29 @@ html[data-os="android"] .screen[data-app-open] .android-nav {
 html[data-os="android"] .home-screen {
   padding-bottom: calc(var(--bar) + 1cqw);
 }
-html[data-os="android"] .dock {
-  background: none;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
 /* Icons are circles. */
 html[data-os="android"] .app-icon {
   border-radius: 50%;
 }
 
-/* Status bar: a signal wedge and an upright battery, no carrier. */
-html[data-os="android"] .statusbar__carrier {
-  display: none;
+/* The camera is a punch-hole, the colour of the frame. With no frame drawn
+   (narrow screens) there is no hardware to show at all. */
+html[data-os="android"] .screen {
+  --island-w: 11px;
+  --island-h: 11px;
+  --island-top: 15px;
+  --island-ink: var(--device);
 }
+html[data-os="android"] .island__lens {
+  opacity: 0;
+}
+@media (max-width: 639px) {
+  html[data-os="android"] .island {
+    display: none;
+  }
+}
+
+/* Status bar: a signal wedge and an upright battery. */
 html[data-os="android"] .statusbar__bars {
   width: 11px;
   height: 11px;
@@ -1946,7 +2219,34 @@ html[data-os="android"] .statusbar__battery i {
   border-radius: 1px;
 }
 
-/* Going back: an arrow, not the name of where you came from. */
+/* The top app bar is a solid strip above the page, not glass over it: the
+   page is clipped at its lower edge. Back arrow, then the small title beside
+   it rather than centred, then any actions. */
+html[data-os="android"] .scr__bar {
+  position: static;
+  flex-shrink: 0;
+  display: flex;
+  height: auto;
+  min-height: 78px;
+  pointer-events: auto;
+}
+html[data-os="android"] .scr__bar + .scr__body {
+  padding-top: 2px;
+}
+html[data-os="android"] .scr__lead:empty {
+  display: none;
+}
+html[data-os="android"] .scr__lead,
+html[data-os="android"] .scr__actions {
+  min-width: 0;
+}
+html[data-os="android"] .scr__inline {
+  flex: 1;
+  text-align: start;
+  font-size: 16px;
+  font-weight: 500;
+}
+/* Going back: an arrow, in the open, that dims when pressed. */
 html[data-os="android"] .scr__back-ios {
   display: none;
 }
@@ -1954,9 +2254,16 @@ html[data-os="android"] .scr__back-android {
   display: block;
 }
 html[data-os="android"] .scr__back {
+  width: auto;
+  height: auto;
   margin-left: -8px;
   padding: 6px 8px;
-  color: var(--fg);
+  border-radius: 8px;
+  transition: opacity 150ms ease;
+}
+html[data-os="android"] .scr__back:active {
+  transform: none;
+  opacity: 0.55;
 }
 /* A top app bar title rather than a large serif one. */
 html[data-os="android"] .scr__title,

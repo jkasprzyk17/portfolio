@@ -357,6 +357,7 @@ export default function Phone({
   }, [active]);
 
   // ── Notifications ─────────────────────────────────────────────────────
+  const islandRef = useRef<HTMLSpanElement>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const dismissNotice = useCallback(() => setNotice(null), []);
 
@@ -593,6 +594,7 @@ export default function Phone({
 
                 <Banner
                   notice={notice}
+                  island={islandRef}
                   onActivate={activateNotice}
                   onDismiss={dismissNotice}
                 />
@@ -600,7 +602,6 @@ export default function Phone({
                 <div className="statusbar" aria-hidden>
                   <Clock />
                   <span className="statusbar__right">
-                    <span className="statusbar__carrier">Kraków</span>
                     <span className="statusbar__bars">
                       <i />
                       <i />
@@ -612,7 +613,12 @@ export default function Phone({
                     </span>
                   </span>
                 </div>
-                <span aria-hidden className="device__camera" />
+                {/* The front camera: an island on iOS, a punch-hole in the
+                    Android skin (CSS reshapes the one element). The lens is
+                    its own layer so it stays in view, the way real hardware
+                    does, while a notification fills the island around it. */}
+                <span ref={islandRef} aria-hidden className="island" />
+                <span aria-hidden className="island__lens" />
                 <m.span
                   aria-hidden
                   className="device__glare"

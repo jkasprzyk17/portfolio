@@ -1,10 +1,17 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 
 /**
- * The frame every app except the map draws itself in: room for the status
- * bar, an optional back button, a large title with any actions beside it,
- * and a body that scrolls on its own without dragging the page along.
+ * The frame every app except the map draws itself in: a navigation bar (an
+ * optional back button, any actions), a large title, and a body that scrolls
+ * on its own without dragging the page along.
+ *
+ * The title belongs to the page, not the bar: it scrolls away with the
+ * content, and once it is out of sight the bar shows it small instead. Both
+ * platforms do this; what differs is the bar, which CSS draws (buttons of
+ * glass floating over the page on iOS, a solid strip on Android).
  */
 export default function AppScreen({
   title,
@@ -19,10 +26,19 @@ export default function AppScreen({
   children: ReactNode;
   className?: string;
 }) {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  // "scrolled": something is under the bar. "collapsed": the large title is,
+  // so the bar has to say where you are.
+  const [scroll, setScroll] = useState<"top" | "scrolled" | "collapsed">("top");
+
   return (
-    <div className={`scr ${className}`}>
+    <div
+      className={`scr ${className}`}
+      data-scrolled={scroll === "top" ? undefined : ""}
+      data-collapsed={scroll === "collapsed" ? "" : undefined}
+    >
       <header className="scr__bar">
-        <div className="scr__nav">
+        <div className="scr__lead">
           {back ? (
             <button
               type="button"
@@ -30,27 +46,36 @@ export default function AppScreen({
               onClick={back.onClick}
               aria-label={`Back to ${back.label}`}
             >
-              {/* iOS names where you came from; Android just points back.
-                  CSS shows one or the other. */}
-              <span className="scr__back-ios">
-                <ChevronLeft size={18} aria-hidden />
-                {back.label}
-              </span>
+              {/* A chevron on iOS, an arrow on Android; CSS shows one. */}
+              <ChevronLeft size={20} aria-hidden className="scr__back-ios" />
               <ArrowLeft size={20} aria-hidden className="scr__back-android" />
             </button>
           ) : null}
         </div>
-        {/* h2: the page's one h1 is the headline beside the phone. */}
-        {actions ? (
-          <div className="scr__head">
-            <h2 className="scr__title">{title}</h2>
-            <div className="scr__actions">{actions}</div>
-          </div>
-        ) : (
-          <h2 className="scr__title">{title}</h2>
-        )}
+        {/* The title again, for when the real one has scrolled away. Only
+            for the eye: the heading below is the one that is read out. */}
+        <span aria-hidden className="scr__inline">
+          {title}
+        </span>
+        <div className="scr__actions">{actions}</div>
       </header>
-      <div className="scr__body">{children}</div>
+      <div
+        className="scr__body"
+        onScroll={(e) => {
+          const y = e.currentTarget.scrollTop;
+          // Not the moment the title touches the bar: once its last line
+          // has cleared the row the small one appears in, so the two are
+          // never read through each other.
+          const gone = (titleRef.current?.offsetHeight ?? 0) + 24;
+          setScroll(y > gone ? "collapsed" : y > 2 ? "scrolled" : "top");
+        }}
+      >
+        {/* h2: the page's one h1 is the headline beside the phone. */}
+        <h2 ref={titleRef} className="scr__title">
+          {title}
+        </h2>
+        {children}
+      </div>
     </div>
   );
 }
