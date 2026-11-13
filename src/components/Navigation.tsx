@@ -28,8 +28,8 @@ export default function Navigation() {
   return (
     <nav className="sticky top-0 z-50 bg-bg/80 backdrop-blur-md border-b hairline">
       <div className="max-w-2xl mx-auto px-5 sm:px-6">
-        <div className="flex items-center justify-between h-14 text-[14px]">
-          <div className="flex items-center gap-5 sm:gap-7">
+        <div className="flex items-center justify-between h-14 font-mono text-[13px]">
+          <div className="flex items-center gap-3 min-[360px]:gap-4 sm:gap-6">
             {navItems.map((item) => (
               <button
                 key={item.name}

@@ -5,7 +5,9 @@ import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
-  subsets: ["latin"],
+  // latin-ext carries the Ł in Łatwa Ustna; without it that glyph fell back
+  // to the system font mid-word.
+  subsets: ["latin", "latin-ext"],
   variable: "--font-inter",
 });
 

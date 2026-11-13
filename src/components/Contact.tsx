@@ -3,6 +3,8 @@
 // Still a client component for the footer year alone: as a server component
 // on this static page it would freeze at the year of the last build.
 
+import SectionHeading from "@/components/SectionHeading";
+
 const links = [
   { label: "Twitter", href: "https://x.com/jkasprzyk17" },
   { label: "GitHub", href: "https://github.com/jkasprzyk17" },
@@ -13,10 +15,12 @@ export default function Contact() {
   const year = new Date().getFullYear();
 
   return (
-    <section id="contact" className="py-14 border-t hairline">
-      <h2 className="text-[13px] tracking-[0.04em] uppercase text-fg-3 mb-6">
-        contact
-      </h2>
+    <section id="contact" className="pt-12 pb-14">
+      <SectionHeading color="var(--accent)">contact</SectionHeading>
+
+      <p className="rise-on-scroll font-display text-[2rem] leading-[1.1] sm:text-[2.5rem] tracking-[-0.02em] text-fg mb-6">
+        Say <em className="text-accent">hi</em>.
+      </p>
 
       <div className="rise-on-scroll text-[15px] leading-7 text-fg-2 space-y-3">
         <p>
@@ -49,7 +53,7 @@ export default function Contact() {
         </p>
       </div>
 
-      <p className="mt-10 text-[12px] text-fg-3">
+      <p className="mt-12 pt-6 border-t hairline font-mono text-[12px] text-fg-3">
         © {year} Jakub Kasprzyk · Kraków, PL
       </p>
     </section>

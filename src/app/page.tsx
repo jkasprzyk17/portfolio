@@ -9,6 +9,7 @@ import Navigation from "@/components/Navigation";
 import { experiences } from "@/data/experience";
 import { education } from "@/data/education";
 import { libraries } from "@/data/libraries";
+import { display, mono } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Jakub Kasprzyk · Mobile Software Engineer",
@@ -61,7 +62,7 @@ const personSchema = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className={`home min-h-screen ${display.variable} ${mono.variable}`}>
       <script
         type="application/ld+json"
         // Static, author-controlled object; no user input reaches this string.

@@ -1,20 +1,19 @@
 import { ArrowUpRight } from "lucide-react";
 import { education } from "@/data/education";
+import SectionHeading from "@/components/SectionHeading";
 
 export default function Education() {
   return (
-    <section id="education" className="py-14 border-t hairline">
-      <h2 className="text-[13px] tracking-[0.04em] uppercase text-fg-3 mb-6">
-        education
-      </h2>
+    <section id="education" className="py-12">
+      <SectionHeading color="var(--fg-3)">education</SectionHeading>
 
-      <ul className="rise-on-scroll space-y-6">
+      <ul className="rise-on-scroll space-y-5">
         {education.map((item) => (
           <li key={item.id} className="text-[15px] leading-6">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4">
               <div className="flex flex-wrap items-baseline gap-x-2 text-fg">
                 <span className="font-medium">{item.field}</span>
-                <span className="text-fg-3">·</span>
+                <span className="text-fg-3 max-sm:hidden">·</span>
                 {item.schoolUrl ? (
                   <a
                     href={item.schoolUrl}
@@ -29,7 +28,7 @@ export default function Education() {
                   <span>{item.school}</span>
                 )}
               </div>
-              <span className="text-fg-3 text-[13px] tabular-nums">
+              <span className="font-mono text-fg-3 text-[12px] tabular-nums">
                 {item.period}
               </span>
             </div>

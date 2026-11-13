@@ -1,31 +1,39 @@
 import Image from "next/image";
+import ClusterMap from "@/components/ClusterMap";
 
 // CSS entrance (.rise-in) rather than a JS one: the text has to be readable
 // before any JavaScript arrives, not server-rendered at opacity 0.
 export default function Hero() {
   return (
-    <section id="home" className="pt-16 pb-14">
-      <div className="rise-in mb-8">
+    <section id="home" className="pt-14 sm:pt-20 pb-14">
+      <div className="rise-in flex items-center gap-3.5 mb-9">
         <Image
           src="/images/profile.jpg"
-          alt="Jakub Kasprzyk"
-          width={72}
-          height={72}
+          alt=""
+          width={44}
+          height={44}
           priority
           className="rounded-full ring-1 ring-line"
         />
+        <div className="leading-5">
+          <p className="text-[15px] font-medium text-fg">Jakub Kasprzyk</p>
+          <p className="font-mono text-[12px] text-fg-3">
+            mobile software engineer · Kraków, PL
+          </p>
+        </div>
       </div>
 
       <h1
         style={{ animationDelay: "60ms" }}
-        className="rise-in text-3xl sm:text-4xl font-semibold tracking-tight text-fg mb-5"
+        className="rise-in font-display text-[2.6rem] leading-[1.04] sm:text-[3.6rem] sm:leading-[1.02] tracking-[-0.025em] text-fg text-balance mb-8"
       >
-        hey, I&apos;m Jakub <span className="inline-block">👋</span>
+        I build mobile apps, and the{" "}
+        <em className="text-accent">native modules</em> underneath them.
       </h1>
 
       <div
         style={{ animationDelay: "120ms" }}
-        className="rise-in space-y-4 text-[15.5px] leading-7 text-fg-2"
+        className="rise-in space-y-4 text-[15.5px] leading-7 text-fg-2 text-pretty"
       >
         <p>
           I&apos;m a 20-year-old Mobile Software Engineer based in Kraków,
@@ -154,13 +162,40 @@ export default function Hero() {
           >
             Łatwa Ustna
           </a>
-          , an AI tutor that helps Polish students prepare for the written and oral matura exam.
+          , an AI tutor that helps Polish students prepare for the written and
+          oral matura exam.
         </p>
-        <p>
-          <a href="/cv" className="prose-link">
-            View my CV →
-          </a>
-        </p>
+      </div>
+
+      <div
+        style={{ animationDelay: "180ms" }}
+        className="rise-in mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 text-[14px]"
+      >
+        {/* The press scale sits on the inner span: .rise-in's fill holds
+            `transform` on the wrapper and would swallow it. */}
+        <a href="/cv" className="group inline-flex">
+          <span className="pressable inline-flex items-center gap-1.5 rounded-full bg-fg text-bg px-4 h-9 font-medium">
+            View my CV
+            <span
+              aria-hidden
+              className="transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+          </span>
+        </a>
+        <a
+          href="https://github.com/jkasprzyk17"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="prose-link font-mono text-[13px]"
+        >
+          github.com/jkasprzyk17
+        </a>
+      </div>
+
+      <div style={{ animationDelay: "240ms" }} className="rise-in mt-12">
+        <ClusterMap />
       </div>
     </section>
   );

@@ -1,19 +1,23 @@
 import { ArrowUpRight, Github } from "lucide-react";
 import { libraries } from "@/data/libraries";
 import { contributions } from "@/data/contributions";
+import SectionHeading from "@/components/SectionHeading";
 
 export default function OpenSource() {
   return (
-    <section id="open-source" className="py-14 border-t hairline">
-      <h2 className="text-[13px] tracking-[0.04em] uppercase text-fg-3 mb-6">
+    <section id="open-source" className="py-12">
+      <SectionHeading
+        color="var(--c-oss)"
+        count={`${libraries.length} libraries`}
+      >
         open source
-      </h2>
+      </SectionHeading>
 
-      <ul className="rise-on-scroll space-y-6">
+      <ul className="rise-on-scroll space-y-1">
         {libraries.map((library) => {
           const primary = library.npmUrl || library.githubUrl;
           return (
-            <li key={library.id} className="text-[15px] leading-6">
+            <li key={library.id} className="row text-[15px] leading-6">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4">
                 <div className="flex items-baseline gap-2">
                   <a
@@ -37,7 +41,7 @@ export default function OpenSource() {
                     </a>
                   )}
                 </div>
-                <span className="text-fg-3 text-[13px]">
+                <span className="font-mono text-fg-3 text-[12px]">
                   {library.tags.slice(0, 2).join(" · ")}
                 </span>
               </div>
@@ -47,8 +51,20 @@ export default function OpenSource() {
             </li>
           );
         })}
+      </ul>
+
+      <h3 className="flex items-center gap-2.5 font-mono text-[12px] text-fg-3 mt-9 mb-4">
+        <span
+          aria-hidden
+          className="size-2 rounded-[2px]"
+          style={{ background: "var(--c-core)" }}
+        />
+        merged upstream
+      </h3>
+
+      <ul className="rise-on-scroll space-y-1">
         {contributions.map((contribution) => (
-          <li key={contribution.id} className="text-[15px] leading-6">
+          <li key={contribution.id} className="row text-[15px] leading-6">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4">
               <a
                 href={contribution.url}
@@ -59,7 +75,7 @@ export default function OpenSource() {
                 {contribution.project}
                 <ArrowUpRight size={13} className="opacity-60" />
               </a>
-              <span className="text-fg-3 text-[13px]">
+              <span className="font-mono text-fg-3 text-[12px]">
                 merged · {contribution.date}
               </span>
             </div>

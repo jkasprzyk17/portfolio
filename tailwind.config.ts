@@ -23,6 +23,17 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        // Both variables only exist on the home page (src/app/fonts.ts), so
+        // the fallbacks live inside var(): an undefined variable would
+        // otherwise invalidate the whole declaration on /cv and /links.
+        display: ["var(--font-display, Georgia)", "Georgia", "serif"],
+        mono: [
+          "var(--font-mono, ui-monospace)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "monospace",
+        ],
       },
     },
   },
