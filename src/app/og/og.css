@@ -1,0 +1,87 @@
+/* The Open Graph card (see page.tsx). The home page's own markup, laid out
+   again for a fixed 1200×630 frame. Everything is under #og and sized in px,
+   so the card comes out the same in a window of any size. */
+#og {
+  position: relative;
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  background: var(--bg);
+}
+#og .home {
+  min-height: 0;
+}
+#og .flat-only {
+  display: none;
+}
+
+/* The top bar becomes a name line: no border, no links, no theme switch. */
+#og header {
+  position: absolute;
+  top: 54px;
+  left: 72px;
+  z-index: 1;
+  border: 0;
+  background: none;
+  backdrop-filter: none;
+  transform: scale(1.5);
+  transform-origin: left top;
+}
+#og header > div {
+  max-width: none;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+#og header > div > div:last-child {
+  display: none;
+}
+#og header span {
+  display: inline;
+}
+
+/* The intro keeps its headline and its one sentence. */
+#og .stage {
+  display: block;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+#og .intro {
+  position: absolute;
+  top: 150px;
+  left: 72px;
+  width: 660px;
+}
+#og .intro h1 {
+  font-size: 80px;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+#og .intro p {
+  /* Short of the phone's leaning edge. */
+  max-width: 594px;
+  margin-top: 32px;
+  font-size: 21px;
+  line-height: 1.5;
+}
+#og .intro > div {
+  display: none;
+}
+
+/* The phone, larger and leaning, running off the bottom of the frame. The
+   transform sits on its wrapper: .device's entrance animation holds its own. */
+#og .stage > .js-only {
+  position: absolute;
+  top: 46px;
+  right: 116px;
+  transform: rotate(6deg) scale(1.5);
+  transform-origin: 50% 0;
+}
+#og .stage > .js-only + .js-only {
+  display: none;
+}
+#og .device {
+  --ph: 500px;
+}
