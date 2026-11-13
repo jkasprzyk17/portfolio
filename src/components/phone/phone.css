@@ -6,6 +6,23 @@
   /* Fits one screen under the 56px top bar with room to breathe, down to a
      640px-tall laptop window (512px of device plus the stage's padding). */
   --ph: clamp(480px, calc(100svh - 56px - 72px), 720px);
+  --aspect: 0.487;
+  --bezel: 10px;
+
+  /* Corners nest from the inside out: icon, dock, screen, body. Each radius
+     is the one inside it plus the gap between the two, so the curves run
+     parallel instead of pinching at the corner. The numbers are hundredths
+     of the screen's width, which is 1cqw for anything inside the screen. */
+  --icon-r: 3.45; /* 23% of a 15cqw icon */
+  --dock-pad: 3.75; /* dock edge to icon: what four icons in four columns leave */
+  --edge: 5; /* screen edge to the dock, the widget and a banner */
+  --tile-r: calc(var(--icon-r) + var(--dock-pad));
+  --screen-r: calc(var(--tile-r) + var(--edge));
+  /* The screen can't size its own corner in cqw, so its width is worked out
+     here: the body is --aspect of its height wide, less a bezel either side. */
+  --screen-w: calc(var(--ph) * var(--aspect) - 2 * var(--bezel));
+  --r: calc(var(--screen-w) * var(--screen-r) / 100);
+
   display: grid;
   place-items: center;
   perspective: 1400px;
@@ -18,9 +35,9 @@
 .device__body {
   position: relative;
   height: var(--ph);
-  aspect-ratio: 0.487;
-  padding: 10px;
-  border-radius: 56px;
+  aspect-ratio: var(--aspect);
+  padding: var(--bezel);
+  border-radius: calc(var(--r) + var(--bezel));
   background: var(--device);
   box-shadow:
     inset 0 0 0 1.5px var(--device-edge),
@@ -65,7 +82,6 @@
 }
 
 .screen {
-  --r: 46px;
   /* Height of the strip at the bottom that belongs to the system (the home
      bar). Everything that has to stay clear of it is measured from this. */
   --bar: 34px;
@@ -114,6 +130,10 @@
 @media (max-width: 639px) {
   .device {
     --ph: clamp(500px, calc(100svh - 96px), 660px);
+    /* No frame: the screen is as wide as the page inside its 1rem margins,
+       and it gains a 1px border, which the corner is measured outside of. */
+    --screen-w: calc(100vw - 2rem - 2px);
+    --r: calc(var(--screen-w) * var(--screen-r) / 100 + 1px);
     perspective: none;
   }
   .device__body {
@@ -130,7 +150,6 @@
     display: none;
   }
   .screen {
-    --r: 30px;
     border: 1px solid var(--line);
     /* Used when an app opens and the screen is scrolled to the middle of the
        viewport: more room above (sticky header) than below. */
@@ -151,6 +170,12 @@
   font-size: 12.5px;
   font-weight: 600;
   pointer-events: none;
+  transition: opacity 150ms ease;
+}
+/* A banner sits in line with the widget, so it no longer covers the whole
+   status bar: the bar fades out rather than peek over the banner's edge. */
+.screen:has(.banner) .statusbar {
+  opacity: 0;
 }
 .statusbar__time {
   min-width: 2.6em;
@@ -212,14 +237,14 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  padding: 54px 5cqw 4.5cqw;
+  padding: 54px calc(var(--edge) * 1cqw) calc(var(--edge) * 1cqw);
 }
 
 /* The widget is a plain tile, the way phone widgets are: one solid surface,
    no glass, no border. A touch lighter than the wallpaper in either theme. */
 .widget {
   padding: 4cqw 4.5cqw 4.2cqw;
-  border-radius: 7cqw;
+  border-radius: calc(var(--tile-r) * 1cqw);
   background: var(--bg);
   font-family: var(--font-inter), system-ui, sans-serif;
 }
@@ -310,10 +335,12 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin-top: auto;
-  padding: 3.5cqw 0 2.5cqw;
-  border-radius: 9cqw;
+  /* The same gap above the icons as beside them (see --dock-pad). */
+  padding: calc(var(--dock-pad) * 1cqw) 0 2.5cqw;
+  border-radius: calc(var(--tile-r) * 1cqw);
   background: color-mix(in srgb, var(--bg) 60%, transparent);
-  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  /* A hairline that takes no room, so the padding is exactly the gap. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 80%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -1678,9 +1705,11 @@
 /* ───────────── Notification banner ───────────── */
 .banner {
   position: absolute;
-  inset: 8px 8px auto;
+  /* In line with the widget and the dock, and the same corner as theirs,
+     which keeps it parallel to the screen's. */
+  inset: calc(var(--edge) * 1cqw) calc(var(--edge) * 1cqw) auto;
   z-index: 40;
-  border-radius: 22px;
+  border-radius: calc(var(--tile-r) * 1cqw);
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 92%, transparent);
   backdrop-filter: blur(14px);
@@ -1881,7 +1910,7 @@ html[data-os="android"] .home-screen {
 }
 html[data-os="android"] .dock {
   background: none;
-  border-color: transparent;
+  box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -1965,7 +1994,6 @@ html[data-os="android"] .field,
 html[data-os="android"] .install {
   border-radius: 6px;
 }
-html[data-os="android"] .banner,
 html[data-os="android"] .menu {
   border-radius: 26px;
 }

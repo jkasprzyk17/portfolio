@@ -247,7 +247,8 @@ export default function Phone({
       setSize({
         w: el.clientWidth,
         h: el.clientHeight,
-        r: parseFloat(getComputedStyle(el).getPropertyValue("--r")) || 0,
+        // The computed corner in px: --r itself is a calc() expression.
+        r: parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0,
       });
     measure();
     const observer = new ResizeObserver(measure);
