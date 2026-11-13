@@ -5,6 +5,8 @@ import { libraries } from "@/data/libraries";
 import { contributions } from "@/data/contributions";
 import { projects } from "@/data/projects";
 import { education } from "@/data/education";
+import { contact, summary } from "@/data/profile";
+import { summarise } from "@/lib/text";
 import PrintButton from "./PrintButton";
 
 export const metadata: Metadata = {
@@ -33,24 +35,12 @@ function Section({
   );
 }
 
-// First sentence, keeping its own full stop. Descriptions in the data files
-// are sometimes one sentence and sometimes several.
-function firstSentence(text: string) {
-  return text.match(/^.*?\.(?=\s|$)/)?.[0] ?? text;
-}
-
-// "Radon IDE: Radon IDE is an innovative…" reads badly next to the name, so
-// drop the subject when the description repeats it.
-function summarise(name: string, description: string) {
-  const sentence = firstSentence(description);
-  const prefix = `${name} is `;
-  return sentence.startsWith(prefix) ? sentence.slice(prefix.length) : sentence;
-}
-
 function Row({ left, right }: { left: React.ReactNode; right: string }) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-      <div className="flex flex-wrap items-baseline gap-x-2 text-fg">{left}</div>
+      <div className="flex flex-wrap items-baseline gap-x-2 text-fg">
+        {left}
+      </div>
       <span className="text-fg-3 text-[13px] tabular-nums whitespace-nowrap">
         {right}
       </span>
@@ -75,12 +65,12 @@ export default function CV() {
         <p className="text-fg-2 mt-1">Mobile Software Engineer</p>
         <p className="text-fg-3 text-[13px] mt-3">
           Kraków, PL ·{" "}
-          <a href="mailto:kasprzykjakub@proton.me" className="prose-link">
-            kasprzykjakub@proton.me
+          <a href={`mailto:${contact.email}`} className="prose-link">
+            {contact.email}
           </a>{" "}
           ·{" "}
-          <a href="tel:+48535462019" className="prose-link">
-            +48 535 462 019
+          <a href={contact.phoneHref} className="prose-link">
+            {contact.phone}
           </a>{" "}
           ·{" "}
           <a href="https://github.com/jkasprzyk17" className="prose-link">
@@ -94,12 +84,7 @@ export default function CV() {
             linkedin.com/in/jkasprzyk17
           </a>
         </p>
-        <p className="text-fg-2 mt-5 text-pretty">
-          Mobile Software Engineer with four years of commercial experience,
-          building cross-platform apps with React Native and Expo. Currently at
-          GMI software, where I also author open-source native modules built on
-          Nitro Modules.
-        </p>
+        <p className="text-fg-2 mt-5 text-pretty">{summary}</p>
       </header>
 
       <Section title="Experience">

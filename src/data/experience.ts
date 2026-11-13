@@ -210,7 +210,7 @@ export const experiences: ExperienceItem[] = [
     title: "Mobile Software Engineer",
     company: "MMLab Cloud / MyMusic",
     companyUrl: "https://mymusic.pl",
-    location: "Kraków, PL",
+    location: "Remote",
     period: "Dec 2022 – Dec 2025",
     companyLogo: "/images/mymusic-logo.png",
     description: [

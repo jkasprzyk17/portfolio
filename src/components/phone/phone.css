@@ -1,0 +1,1971 @@
+/* The device is its own design, not a copy of any real phone: same paper,
+   ink and vermilion as the page around it. */
+.device {
+  --device: #1b1a16;
+  --device-edge: #34322b;
+  /* Fits one screen under the 56px top bar with room to breathe, down to a
+     640px-tall laptop window (512px of device plus the stage's padding). */
+  --ph: clamp(480px, calc(100svh - 56px - 72px), 720px);
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+}
+:root[data-theme="dark"] .device {
+  --device: #2a2925;
+  --device-edge: #46443c;
+}
+
+.device__body {
+  position: relative;
+  height: var(--ph);
+  aspect-ratio: 0.487;
+  padding: 10px;
+  border-radius: 56px;
+  background: var(--device);
+  box-shadow:
+    inset 0 0 0 1.5px var(--device-edge),
+    0 50px 80px -40px rgba(30, 20, 8, 0.45),
+    0 24px 40px -24px rgba(30, 20, 8, 0.35);
+}
+
+/* A soft band of light that slides across the glass as the device turns. */
+.device__glare {
+  position: absolute;
+  inset: 0 -40%;
+  z-index: 35;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.11) 50%,
+    transparent 62%
+  );
+  pointer-events: none;
+}
+
+.device__key {
+  position: absolute;
+  width: 3px;
+  background: var(--device);
+  border-radius: 2px;
+}
+.device__key--power {
+  right: -3px;
+  top: 24%;
+  height: 12%;
+}
+.device__key--up {
+  left: -3px;
+  top: 20%;
+  height: 7%;
+}
+.device__key--down {
+  left: -3px;
+  top: 29%;
+  height: 7%;
+}
+
+.screen {
+  --r: 46px;
+  /* Height of the strip at the bottom that belongs to the system (the home
+     bar). Everything that has to stay clear of it is measured from this. */
+  --bar: 34px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--r);
+  /* cqw/cqh for everything inside, so the UI is drawn relative to the screen
+     and looks the same in the frame and frameless on a phone. */
+  container-type: size;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      120% 70% at 85% 0%,
+      color-mix(in srgb, var(--accent) 30%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      100% 60% at 0% 100%,
+      color-mix(in srgb, var(--c-oss) 20%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(var(--line) 1px, transparent 1px) 0 0 / 14px 14px,
+    var(--bg-2);
+  color: var(--fg);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.device__camera {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  background: var(--device);
+  z-index: 31;
+  pointer-events: none;
+}
+
+/* On a phone the visitor is already holding the frame. */
+@media (max-width: 639px) {
+  .device {
+    --ph: clamp(500px, calc(100svh - 96px), 660px);
+    perspective: none;
+  }
+  .device__body {
+    width: 100%;
+    aspect-ratio: auto;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .device__key,
+  .device__camera,
+  .device__glare {
+    display: none;
+  }
+  .screen {
+    --r: 30px;
+    border: 1px solid var(--line);
+    /* Used when an app opens and the screen is scrolled to the middle of the
+       viewport: more room above (sticky header) than below. */
+    scroll-margin: 64px 0 24px;
+  }
+}
+
+/* ───────────── Status bar ───────────── */
+.statusbar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 30;
+  height: 42px;
+  padding: 0 7.5cqw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 600;
+  pointer-events: none;
+}
+.statusbar__time {
+  min-width: 2.6em;
+  font-variant-numeric: tabular-nums;
+}
+.statusbar__right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.statusbar__carrier {
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.statusbar__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 10px;
+}
+.statusbar__bars i {
+  width: 2.5px;
+  border-radius: 1px;
+  background: currentColor;
+}
+.statusbar__bars i:nth-child(1) {
+  height: 40%;
+}
+.statusbar__bars i:nth-child(2) {
+  height: 60%;
+}
+.statusbar__bars i:nth-child(3) {
+  height: 80%;
+}
+.statusbar__bars i:nth-child(4) {
+  height: 100%;
+}
+.statusbar__battery {
+  width: 21px;
+  height: 10.5px;
+  padding: 1.5px;
+  border-radius: 3.5px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 45%, transparent);
+}
+.statusbar__battery i {
+  display: block;
+  width: 78%;
+  height: 100%;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+/* ───────────── Home screen ───────────── */
+.home-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 54px 5cqw 4.5cqw;
+}
+
+/* The widget is a plain tile, the way phone widgets are: one solid surface,
+   no glass, no border. A touch lighter than the wallpaper in either theme. */
+.widget {
+  padding: 4cqw 4.5cqw 4.2cqw;
+  border-radius: 7cqw;
+  background: var(--bg);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+:root[data-theme="dark"] .widget {
+  background: #1e1d1a;
+}
+
+/* Work history, to scale. Names on the left, time running to the right. */
+.timeline {
+  position: relative;
+  display: grid;
+  /* Names take exactly the room the longest one needs; time gets the rest. */
+  grid-template-columns: max-content 1fr;
+  column-gap: 3cqw;
+  row-gap: 1.9cqw;
+  align-items: center;
+  font-size: clamp(9.5px, 3.4cqw, 11.5px);
+  line-height: 1.2;
+}
+/* The years: a line per January from the top row to the last, behind the
+   bars, with its label in the first row. */
+.timeline__years {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1 / -1;
+  align-self: stretch;
+  font-size: 0.86em;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-3);
+}
+.timeline__years span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding-left: 3px;
+  border-left: 1px solid var(--line);
+}
+.timeline__name {
+  grid-column: 1;
+  white-space: nowrap;
+  color: var(--fg-2);
+}
+.timeline__name[data-current] {
+  font-weight: 600;
+  color: var(--fg);
+}
+.timeline__track {
+  position: relative;
+  grid-column: 2;
+  height: 0.62em;
+}
+.timeline__bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 0.62em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fg) 30%, transparent);
+  transform-origin: left center;
+  /* Drawn in, one after another, the first time the screen appears. Only a
+     start state is given, so the bars rest at their real length. */
+  animation: bar-in 620ms var(--ease-out) backwards;
+  animation-delay: calc(520ms + var(--i) * 80ms);
+}
+@keyframes bar-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+/* The current job hasn't ended: its bar runs past the tile's padding and
+   fades out instead of stopping. */
+.timeline__bar[data-current] {
+  right: -4.5cqw;
+  border-radius: 999px 0 0 999px;
+  background: var(--accent);
+  -webkit-mask-image: linear-gradient(to right, #000 55%, transparent);
+  mask-image: linear-gradient(to right, #000 55%, transparent);
+}
+
+.icons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 4.5cqw;
+  margin-top: 6.5cqw;
+}
+
+.dock {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: auto;
+  padding: 3.5cqw 0 2.5cqw;
+  border-radius: 9cqw;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6cqw;
+  min-width: 0;
+  /* Backwards fill only: once the pop finishes the icon is back on its own
+     styles, so the press scale below isn't held hostage by the animation. */
+  animation: icon-in 420ms var(--ease-out) backwards;
+  animation-delay: calc(260ms + var(--i) * 22ms);
+}
+@keyframes icon-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+.icon-btn__icon {
+  display: block;
+  font-size: 15cqw;
+  transition: transform 160ms var(--ease-out);
+}
+.icon-btn:active .icon-btn__icon {
+  transform: scale(0.92);
+}
+.icon-btn__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Scales with the screen so "Open source" still fits under its icon on a
+     short laptop, where the whole device is drawn smaller. */
+  font-size: clamp(8.5px, 3.4cqw, 11px);
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  color: var(--fg);
+}
+.icon-btn:focus-visible {
+  outline: none;
+}
+.icon-btn:focus-visible .app-icon {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.app-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  border-radius: 0.23em;
+  /* No background. A white tile behind the artwork showed as a white rim
+     wherever the image didn't land exactly on the tile's edge: at rounded
+     corners, in sub-pixel gaps, and around art with its own shape. */
+}
+/* A hairline drawn over the artwork, tinted from the theme's text colour:
+   barely there, but it keeps a black icon from dissolving into a dark
+   wallpaper (and a white one into a light wallpaper). */
+.app-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 11%, transparent);
+  pointer-events: none;
+}
+.app-icon svg {
+  width: 0.5em;
+  height: 0.5em;
+}
+.app-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.app-icon--folder {
+  grid-template-columns: repeat(2, 0.27em);
+  grid-template-rows: repeat(2, 0.27em);
+  place-content: center;
+  place-items: stretch;
+  gap: 0.09em;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+}
+.app-icon--folder span {
+  border-radius: 0.07em;
+}
+
+/* ───────────── App window ───────────── */
+.app {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: var(--bg);
+  will-change: transform;
+  outline: none;
+}
+.app__body {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+.app__face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* The whole strip is the handle; the pill is only what you see. */
+.homebar {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 5;
+  height: var(--bar);
+  display: grid;
+  place-items: center;
+  touch-action: none;
+  cursor: grab;
+}
+.homebar::after {
+  content: "";
+  width: 36%;
+  height: 5px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--fg) 78%, transparent);
+  transition: transform 160ms var(--ease-out);
+}
+.homebar:active {
+  cursor: grabbing;
+}
+.homebar:active::after {
+  transform: scaleX(0.92);
+}
+.homebar:focus-visible {
+  outline: none;
+}
+.homebar:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ───────────── Maps ───────────── */
+.maps {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: var(--bg-2);
+  /* The map owns every touch that lands on it: pan, pinch, double tap. */
+  touch-action: none;
+  cursor: grab;
+  font-family: var(--font-mono, ui-monospace), monospace;
+}
+.maps:active {
+  cursor: grabbing;
+}
+
+.maps__terrain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.maps__terrain path,
+.maps__terrain ellipse {
+  fill: none;
+  stroke: var(--line);
+  stroke-linecap: round;
+  /* Line weights are in screen px whatever the zoom; they step up as you get
+     closer (data-level), the way a map redraws itself. */
+  vector-effect: non-scaling-stroke;
+  transition:
+    stroke-width 300ms var(--ease-out),
+    opacity 300ms var(--ease-out);
+}
+.maps__terrain .river {
+  stroke: color-mix(in srgb, var(--c-oss) 22%, var(--bg-2));
+  stroke-width: 4;
+}
+.maps__terrain .park {
+  stroke: color-mix(in srgb, var(--c-core) 24%, var(--bg-2));
+  stroke-width: 2;
+}
+.maps__terrain .roads--far > * {
+  stroke-width: 1.5;
+}
+.maps__terrain .roads--near > * {
+  stroke-width: 3;
+  opacity: 0;
+}
+.maps[data-level="2"] .river {
+  stroke-width: 8;
+}
+.maps[data-level="2"] .park {
+  stroke-width: 5;
+}
+.maps[data-level="2"] .roads--far > * {
+  stroke-width: 3;
+}
+.maps[data-level="3"] .river,
+.maps[data-level="4"] .river {
+  stroke-width: 16;
+}
+.maps[data-level="3"] .park,
+.maps[data-level="4"] .park {
+  stroke-width: 9;
+}
+.maps[data-level="3"] .roads--far > *,
+.maps[data-level="4"] .roads--far > * {
+  stroke-width: 6;
+}
+.maps[data-level="3"] .roads--near > *,
+.maps[data-level="4"] .roads--near > * {
+  opacity: 1;
+}
+.maps[data-level="4"] .roads--near > * {
+  stroke-width: 5;
+}
+
+.maps__world {
+  --inv: 1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.mk,
+.mk__inv,
+.district {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.mk__inv {
+  scale: var(--inv);
+}
+
+.district i {
+  position: absolute;
+  translate: -50% -50%;
+  scale: var(--inv);
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fg-3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out);
+}
+.maps[data-level="3"] .district i,
+.maps[data-level="4"] .district i {
+  opacity: 0.85;
+}
+.district--water i {
+  color: color-mix(in srgb, var(--c-oss) 60%, var(--fg-3));
+  font-style: italic;
+}
+.maps .district--city i {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  opacity: 0.85;
+}
+.maps[data-level="3"] .district--city i,
+.maps[data-level="4"] .district--city i {
+  opacity: 0;
+}
+
+.cluster {
+  position: absolute;
+  left: calc(var(--size) / -2);
+  top: calc(var(--size) / -2);
+  width: var(--size);
+  height: var(--size);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--bg);
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--c) 22%, transparent),
+    0 0 0 11px color-mix(in srgb, var(--c) 9%, transparent);
+  cursor: pointer;
+}
+.cluster__count {
+  font-size: 13.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: transform 160ms var(--ease-out);
+}
+.cluster:active .cluster__count {
+  transform: scale(0.86);
+}
+.cluster__label,
+.pin__label {
+  padding: 0 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 10.5px;
+  color: var(--fg-2);
+  /* Its own ground, so a road passing behind doesn't read as a strikethrough. */
+  background: color-mix(in srgb, var(--bg-2) 86%, transparent);
+}
+.cluster__label {
+  position: absolute;
+  top: calc(100% + 13px);
+  left: 50%;
+  translate: -50% 0;
+}
+
+.pin {
+  position: absolute;
+  left: 0;
+  top: -10px;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+.pin__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow:
+    0 0 0 2px var(--bg-2),
+    0 0 0 5px color-mix(in srgb, var(--c) 26%, transparent);
+  transition: transform 180ms var(--ease-out);
+}
+.pin:active .pin__dot {
+  transform: scale(0.82);
+}
+.pin[data-selected] .pin__dot {
+  transform: scale(1.35);
+}
+.pin[data-selected] .pin__label {
+  color: var(--fg);
+  background: var(--bg);
+}
+.pin:focus-visible,
+.cluster:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.pin:focus-visible {
+  border-radius: 8px;
+}
+
+.maps__chips {
+  position: absolute;
+  inset: 46px 0 auto;
+  display: flex;
+  gap: 6px;
+  padding: 0 4.5cqw 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  cursor: default;
+}
+.maps__chips::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 11px;
+  color: var(--fg);
+  transition: transform 160ms var(--ease-out);
+}
+.chip i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.chip:active {
+  transform: scale(0.96);
+}
+
+.maps__status {
+  position: absolute;
+  left: 5cqw;
+  bottom: calc(var(--bar) + 10px);
+  font-size: 10.5px;
+  color: var(--fg-3);
+  pointer-events: none;
+}
+
+.maps__zoom {
+  position: absolute;
+  right: 4.5cqw;
+  bottom: calc(var(--bar) + 8px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  cursor: default;
+}
+.maps__zoom button {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: var(--fg-2);
+  transition: background-color 150ms ease;
+}
+.maps__zoom button + button {
+  border-top: 1px solid var(--line);
+}
+.maps__zoom button:active {
+  background: var(--bg-2);
+}
+
+.place {
+  position: absolute;
+  inset: auto 3cqw calc(var(--bar) + 6px);
+  z-index: 4;
+  padding: 14px 16px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  box-shadow: 0 12px 30px -16px rgba(20, 14, 6, 0.5);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  cursor: default;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.place__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding-right: 30px;
+}
+/* The same dot the map draws for this place, level with the title's first
+   line however many lines the title runs to. */
+.place__pin {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin: calc((21px * 1.15 - 12px) / 2) 0 0 4px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 24%, transparent);
+}
+.place__title {
+  min-width: 0;
+  font-family: var(--font-display, Georgia), serif;
+  font-size: 21px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+.place__meta {
+  margin-top: 7px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--fg-3);
+}
+.place__text {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--fg-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.place__open {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 16px;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  transition: transform 160ms var(--ease-out);
+}
+.place__open:active {
+  transform: scale(0.97);
+}
+.place__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--bg-2);
+  color: var(--fg-2);
+}
+
+/* ───────────── App screens ─────────────
+   Everything below the map: the frame an app draws itself in, in-app
+   navigation, and the pieces the apps share. */
+.scr {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg-2);
+}
+/* Content scrolling under the home bar fades out instead of running
+   through it. */
+.scr::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: calc(var(--bar) + 12px);
+  background: linear-gradient(transparent, var(--bg) 62%);
+  pointer-events: none;
+}
+/* The sheet is light in either theme, so it can't fade into the desk the way
+   text fades into its own page. It slides under a flat edge instead. */
+.scr.cv::after {
+  height: var(--bar);
+  background: var(--bg-2);
+  box-shadow: 0 -1px 0 var(--line);
+}
+.scr__bar {
+  flex-shrink: 0;
+  padding: 44px 5cqw 10px;
+}
+.scr__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 34px;
+}
+.scr__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  margin-left: -6px;
+  padding: 4px 8px 4px 2px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--accent);
+  transition: opacity 150ms ease;
+}
+.scr__back:active {
+  opacity: 0.55;
+}
+/* The back button carries both platforms' affordances; this is the default
+   one. The Android skin block further down swaps them. */
+.scr__back-ios {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+.scr__back-android {
+  display: none;
+}
+/* A title with actions: they share its row, so the row above stays free and
+   the title sits exactly where it does in every other app. */
+.scr__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 2px;
+}
+.scr__head .scr__title {
+  min-width: 0;
+  margin-top: 0;
+}
+.scr__actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 6px;
+  /* Centred on the title without making its row any taller than the title. */
+  margin-block: -4px;
+}
+.scr__title {
+  margin-top: 2px;
+  font-family: var(--font-display, Georgia), serif;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+.scr__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* Scrolling to the end of an app must not start scrolling the page. */
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 6px 5cqw calc(var(--bar) + 18px);
+  /* .screen turns selection off for the home screen; text meant for reading
+     gets it back. */
+  user-select: text;
+  -webkit-user-select: text;
+  scrollbar-width: none;
+}
+.scr__body::-webkit-scrollbar {
+  display: none;
+}
+.scr a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+
+/* Screen-over-screen navigation */
+.stack {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+.stack__layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+.stack__layer[data-role="top"] {
+  z-index: 2;
+  box-shadow: -10px 0 30px -18px rgba(20, 14, 6, 0.5);
+}
+.stack__layer[data-role="buried"] {
+  visibility: hidden;
+}
+.stack__shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+}
+/* The swipe-back zone: the left gutter, below the back button. Narrower
+   than the content padding, so nothing tappable sits under it. */
+.stack__edge {
+  position: absolute;
+  left: 0;
+  top: 92px;
+  bottom: calc(var(--bar) + 6px);
+  z-index: 3;
+  width: 4.5cqw;
+  touch-action: none;
+}
+
+/* Lists of things to open */
+.lrows {
+  border-top: 1px solid var(--line);
+}
+.lrow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 150ms ease;
+}
+.lrow:active {
+  background: var(--bg-2);
+}
+.lrow__main {
+  flex: 1;
+  min-width: 0;
+}
+.lrow__hit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fg);
+}
+/* The button is the title; this stretches its hit area over the row. */
+.lrow__hit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.lrow__hit:focus-visible {
+  outline: none;
+}
+.lrow__hit:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+.lrow__sub {
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--fg-2);
+  pointer-events: none;
+}
+.lrow__clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* A clamped preview of several paragraphs reads as one run of text. */
+.lrow__clamp > p {
+  display: inline;
+}
+.lrow__chevron {
+  flex-shrink: 0;
+  color: var(--fg-3);
+}
+
+/* Facts in a row with a dot between them. Each fact is one flex item, so it
+   wraps whole; its dot sits in the gap to its left, and the row is pulled
+   left by that gap and clipped there, which hides the dot of whichever fact
+   starts a line. */
+.dots {
+  /* As wide as " · " set as text, so a row takes the room it always did. */
+  --gap: 0.84em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-left: calc(var(--gap) * -1);
+  clip-path: inset(-4px -4px -4px calc(var(--gap) - 2px));
+}
+.dots > span {
+  position: relative;
+  padding-left: var(--gap);
+}
+.dots > span::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  width: var(--gap);
+  text-align: center;
+}
+
+/* Section titles inside an app: plain words at a readable size. */
+.sect {
+  margin: 26px 0 2px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+/* Facts as rows: what it is on the left, the value on the right. */
+.info__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+.info__row:last-child {
+  border-bottom: 0;
+}
+.info__row dt {
+  flex-shrink: 0;
+  color: var(--fg-3);
+}
+.info__row dd {
+  min-width: 0;
+  text-align: right;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+.scr a.pill,
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 15px;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 160ms var(--ease-out);
+}
+.scr a.pill--quiet,
+.pill--quiet {
+  background: var(--bg-2);
+  color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.pill:active {
+  transform: scale(0.96);
+}
+
+/* Notes */
+.note-text {
+  display: grid;
+  gap: 14px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.note-list {
+  display: grid;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--fg);
+}
+
+/* Messages */
+.msg {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+.msg__bar {
+  flex-shrink: 0;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 46px 5cqw 10px;
+  border-bottom: 1px solid var(--line);
+}
+.msg__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.msg__avatar--initials {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--fg-2);
+}
+.msg__name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg);
+}
+.msg__thread {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 4.5cqw;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.bubble {
+  max-width: 82%;
+  padding: 8px 12px;
+  border-radius: 18px 18px 18px 6px;
+  background: var(--bg-2);
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+.bubble a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.bubble--out {
+  align-self: flex-end;
+  border-radius: 18px 18px 6px 18px;
+  background: var(--accent);
+  color: var(--on-accent);
+  white-space: pre-wrap;
+}
+.msg__status {
+  align-self: flex-end;
+  font-size: 11px;
+  color: var(--fg-3);
+}
+.msg__composer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 4.5cqw calc(var(--bar) + 8px);
+}
+.msg__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 38px;
+  max-height: 96px;
+  padding: 8px 14px;
+  border-radius: 19px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  /* 16px: anything smaller and iOS zooms the whole page on focus. */
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--fg);
+  resize: none;
+  field-sizing: content;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.msg__input:focus {
+  outline: none;
+  border-color: var(--fg-3);
+}
+.msg__send {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  transition:
+    transform 160ms var(--ease-out),
+    opacity 150ms ease;
+}
+.msg__send[aria-disabled="true"] {
+  opacity: 0.35;
+}
+.msg__send:not([aria-disabled="true"]):active {
+  transform: scale(0.92);
+}
+
+/* Caret */
+.caret__lead {
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.scr code {
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 0.92em;
+  color: var(--fg);
+}
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 16px 0 14px;
+  padding: 3px;
+  border-radius: 11px;
+  background: var(--bg-2);
+}
+.seg button {
+  height: 30px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-2);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+.seg button[aria-pressed="true"] {
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 1px 3px rgba(20, 14, 6, 0.14);
+}
+.caret__demo {
+  display: grid;
+  gap: 18px;
+}
+.field {
+  position: relative;
+  height: 46px;
+  overflow: hidden;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.field__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0 12px;
+  background: none;
+  font-size: 17px;
+  color: var(--fg);
+  caret-color: var(--accent);
+  user-select: text;
+  -webkit-user-select: text;
+  transition: transform 320ms var(--ease-out);
+}
+.field__input:focus {
+  outline: none;
+}
+.field__input::placeholder {
+  color: var(--fg-3);
+}
+/* #59190: caret and typed text above centre, only while the field is
+   focused; 4.67 pt is the figure from the issue's reproducer. */
+.field__input--high:focus {
+  transform: translateY(-4.67px);
+}
+/* #59195: only the placeholder sat low; typed text was fine. */
+.field__input--low:placeholder-shown {
+  transform: translateY(6px);
+}
+.caret__demo[data-fixed] .field__input {
+  transform: none;
+}
+/* Where the centre is: a tick at each end rather than a line across, which
+   would read as the text being struck through. */
+.field__centre::before,
+.field__centre::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  border-top: 1.5px solid var(--accent);
+}
+.field__centre::before {
+  left: 0;
+}
+.field__centre::after {
+  right: 0;
+}
+.field__centre {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.caret__note {
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+/* The caption opens by naming the field, in the same sentence. */
+.caret__note strong {
+  font-weight: 600;
+  color: var(--fg);
+}
+.caret__disclaimer {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--fg-3);
+}
+.caret__prs {
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.scr .caret__prs a {
+  display: grid;
+  gap: 3px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.caret__pr {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg);
+}
+.caret__pr-title {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--fg-2);
+}
+.caret__pr-meta {
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 11px;
+  color: var(--c-core);
+}
+
+/* A shipped app, laid out like its store page */
+.listing {
+  position: relative;
+  padding-top: 56px;
+}
+.listing__scrim {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 54px;
+  background: linear-gradient(var(--bg) 58%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+.scr[data-scrolled] .listing__scrim {
+  opacity: 1;
+}
+/* The app's own icon, blown up and blurred, as the light behind the header:
+   every app's page takes its colour from its artwork. */
+.listing__glow {
+  position: absolute;
+  /* Exactly as wide as the screen: anything wider would make the page
+     scroll sideways. The artwork is oversized inside it instead. */
+  inset: -40px 0 auto;
+  height: 250px;
+  background-size: 170% auto;
+  background-position: center 35%;
+  filter: blur(34px) saturate(1.5);
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(#000 20%, transparent 92%);
+  mask-image: linear-gradient(#000 20%, transparent 92%);
+  pointer-events: none;
+}
+:root:not([data-theme="dark"]) .listing__glow {
+  opacity: 0.32;
+}
+.listing__head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.listing__head .app-icon {
+  flex-shrink: 0;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.55);
+}
+.listing__id {
+  min-width: 0;
+  display: grid;
+  justify-items: start;
+}
+.listing__name {
+  font-family: var(--font-display, Georgia), serif;
+  font-size: 28px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+.listing__context {
+  margin: 3px 0 10px;
+  font-size: 13.5px;
+  color: var(--fg-2);
+}
+.listing__about {
+  position: relative;
+  margin-top: 22px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--fg);
+}
+/* What it does, one line each, separated the way rows in a list are. */
+.listing__features li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.listing__features li:last-child {
+  border-bottom: 0;
+}
+
+/* Open source */
+.oss__name {
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 0.86em;
+  letter-spacing: -0.02em;
+}
+.oss__about {
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.install {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0 6px 0 12px;
+  min-height: 40px;
+  border-radius: 11px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+}
+.install code {
+  min-width: 0;
+  padding: 8px 0;
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+.install button {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--fg-2);
+  transition: transform 160ms var(--ease-out);
+}
+.install button:active {
+  transform: scale(0.9);
+}
+.oss__hint {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--fg-3);
+}
+.oss__links {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* CV: a sheet of paper on a desk, light whatever the theme. */
+.cv {
+  background: var(--bg-2);
+}
+.paper {
+  --bg: #ffffff;
+  --bg-2: #f6f6f5;
+  --fg: #111110;
+  --fg-2: #3f3e3a;
+  --fg-3: #6b6a65;
+  --line: #dddcd6;
+  padding: 20px 16px 24px;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg-2);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 10px 24px -14px rgba(20, 14, 6, 0.45);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.paper__name {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--fg);
+}
+.paper__role {
+  margin-top: 2px;
+}
+.paper__contact {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--fg-3);
+}
+.paper__summary {
+  margin-top: 12px;
+}
+.paper h3 {
+  margin: 20px 0 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--line);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.paper__entries {
+  display: grid;
+  gap: 14px;
+}
+.paper__title {
+  font-weight: 500;
+  color: var(--fg);
+}
+.paper__title--mono {
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 12px;
+}
+.paper__meta,
+.paper__tech {
+  font-size: 11.5px;
+  color: var(--fg-3);
+}
+.paper__bullets {
+  display: grid;
+  gap: 3px;
+  margin-top: 5px;
+}
+.paper__bullets li {
+  position: relative;
+  padding-left: 12px;
+}
+.paper__bullets li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: var(--fg-3);
+}
+.paper__bullets strong {
+  font-weight: 500;
+  color: var(--fg);
+}
+.paper__tech,
+.paper__text {
+  margin-top: 4px;
+}
+
+/* An app whose code never arrived */
+.app-failed {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 8px;
+  padding-top: 52px;
+}
+.app-failed__title {
+  font-family: var(--font-display, Georgia), serif;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+.app-failed__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ───────────── Notification banner ───────────── */
+.banner {
+  position: absolute;
+  inset: 8px 8px auto;
+  z-index: 40;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 14px 30px -16px rgba(20, 14, 6, 0.55);
+  /* Flicking it upward is its own gesture, not a page scroll. */
+  touch-action: none;
+}
+.banner__hit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: inherit;
+  text-align: left;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+.banner__hit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.banner__hit .app-icon {
+  flex-shrink: 0;
+}
+.banner__text {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+}
+.banner__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--fg-3);
+}
+.banner__title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.banner__body {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--fg-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ───────────── Long-press menu ───────────── */
+.icon-btn {
+  /* A long press is ours: no "save image" sheet, no text selection. */
+  -webkit-touch-callout: none;
+}
+.menu-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 22;
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.menu-icon {
+  position: absolute;
+  z-index: 23;
+  pointer-events: none;
+}
+.menu {
+  position: absolute;
+  z-index: 24;
+  min-width: 172px;
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  box-shadow: 0 18px 40px -18px rgba(20, 14, 6, 0.6);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+.menu__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 14px;
+  text-align: left;
+  font-size: 14px;
+  color: var(--fg);
+  white-space: nowrap;
+  transition: background-color 120ms ease;
+}
+.menu__item + .menu__item {
+  border-top: 1px solid var(--line);
+}
+.menu__item:first-child {
+  font-weight: 500;
+}
+.menu__item svg {
+  flex-shrink: 0;
+  color: var(--fg-3);
+}
+.menu__item:active {
+  background: var(--bg-2);
+}
+.menu__item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .menu__item:hover {
+    background: var(--bg-2);
+  }
+}
+
+/* ───────────── Skin toggle (lives beside the phone, in the intro) ───────── */
+.os-toggle {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 12px;
+}
+.os-toggle button {
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: var(--fg-3);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+.os-toggle button[aria-pressed="true"] {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* ───────────── Android skin ─────────────
+   Chrome only: status bar, icon shape, how you go back, the look of
+   controls. To remove it: delete this block, AndroidNav.tsx (and its one use
+   in Phone.tsx), OsToggle.tsx (and its uses in Intro.tsx and page.tsx), and
+   the scr__back-android arrow in AppScreen.tsx. */
+.android-nav {
+  display: none;
+}
+
+html[data-os="android"] .screen {
+  /* The three-button bar is taller than the home indicator. */
+  --bar: 44px;
+}
+html[data-os="android"] .homebar {
+  display: none;
+}
+html[data-os="android"] .android-nav {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 26;
+  height: var(--bar);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0 12cqw;
+  color: var(--fg);
+}
+html[data-os="android"] .screen[data-app-open] .android-nav {
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.android-nav button {
+  display: grid;
+  place-items: center;
+  transition: opacity 150ms ease;
+}
+.android-nav button:active {
+  opacity: 0.5;
+}
+.android-nav button:disabled {
+  opacity: 0.35;
+}
+.android-nav button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -6px;
+  border-radius: 12px;
+}
+/* The bar is there on the home screen too, so the dock moves up. */
+html[data-os="android"] .home-screen {
+  padding-bottom: calc(var(--bar) + 1cqw);
+}
+html[data-os="android"] .dock {
+  background: none;
+  border-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Icons are circles. */
+html[data-os="android"] .app-icon {
+  border-radius: 50%;
+}
+
+/* Status bar: a signal wedge and an upright battery, no carrier. */
+html[data-os="android"] .statusbar__carrier {
+  display: none;
+}
+html[data-os="android"] .statusbar__bars {
+  width: 11px;
+  height: 11px;
+  background: currentColor;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+html[data-os="android"] .statusbar__bars i {
+  display: none;
+}
+html[data-os="android"] .statusbar__battery {
+  display: flex;
+  align-items: flex-end;
+  width: 8px;
+  height: 13px;
+  border-radius: 2.5px;
+}
+html[data-os="android"] .statusbar__battery i {
+  width: 100%;
+  height: 78%;
+  border-radius: 1px;
+}
+
+/* Going back: an arrow, not the name of where you came from. */
+html[data-os="android"] .scr__back-ios {
+  display: none;
+}
+html[data-os="android"] .scr__back-android {
+  display: block;
+}
+html[data-os="android"] .scr__back {
+  margin-left: -8px;
+  padding: 6px 8px;
+  color: var(--fg);
+}
+/* A top app bar title rather than a large serif one. */
+html[data-os="android"] .scr__title,
+html[data-os="android"] .listing__name {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Controls: outlined segments and squarer buttons. */
+html[data-os="android"] .seg {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid var(--fg-3);
+  background: none;
+}
+html[data-os="android"] .seg button {
+  height: 34px;
+  border-radius: 0;
+}
+html[data-os="android"] .seg button + button {
+  border-left: 1px solid var(--fg-3);
+}
+html[data-os="android"] .seg button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--accent) 18%, var(--bg));
+  box-shadow: none;
+}
+html[data-os="android"] .pill {
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+}
+html[data-os="android"] .field,
+html[data-os="android"] .install {
+  border-radius: 6px;
+}
+html[data-os="android"] .banner,
+html[data-os="android"] .menu {
+  border-radius: 26px;
+}

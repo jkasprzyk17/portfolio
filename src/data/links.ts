@@ -6,6 +6,8 @@
  * `icon` is a plain string so this stays a pure data file; LinkList maps the
  * keys onto lucide components.
  */
+import { contact } from "./profile";
+
 export type LinkIcon =
   | "github"
   | "linkedin"
@@ -84,14 +86,14 @@ export const linkGroups: { title: string; links: LinkEntry[] }[] = [
     links: [
       {
         label: "Email",
-        description: "kasprzykjakub@proton.me",
-        href: "mailto:kasprzykjakub@proton.me",
+        description: contact.email,
+        href: `mailto:${contact.email}`,
         icon: "mail",
       },
       {
         label: "Phone",
-        description: "+48 535 462 019",
-        href: "tel:+48535462019",
+        description: contact.phone,
+        href: contact.phoneHref,
         icon: "phone",
       },
       {

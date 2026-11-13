@@ -4,12 +4,9 @@
 // on this static page it would freeze at the year of the last build.
 
 import SectionHeading from "@/components/SectionHeading";
+import { contact } from "@/data/profile";
 
-const links = [
-  { label: "Twitter", href: "https://x.com/jkasprzyk17" },
-  { label: "GitHub", href: "https://github.com/jkasprzyk17" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/jkasprzyk17/" },
-];
+const links = contact.socials;
 
 export default function Contact() {
   const year = new Date().getFullYear();
@@ -25,12 +22,12 @@ export default function Contact() {
       <div className="rise-on-scroll text-[15px] leading-7 text-fg-2 space-y-3">
         <p>
           Email me at{" "}
-          <a href="mailto:kasprzykjakub@proton.me" className="prose-link">
-            kasprzykjakub@proton.me
+          <a href={`mailto:${contact.email}`} className="prose-link">
+            {contact.email}
           </a>{" "}
           or call{" "}
-          <a href="tel:+48535462019" className="prose-link">
-            +48 535 462 019
+          <a href={contact.phoneHref} className="prose-link">
+            {contact.phone}
           </a>
           .
         </p>

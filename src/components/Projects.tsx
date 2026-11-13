@@ -22,7 +22,7 @@ export default function Projects() {
               className="row flex gap-3.5 text-[15px] leading-6"
             >
               {project.image && (
-                <span className="logo-tile size-10 rounded-[10px] mt-0.5">
+                <span className="logo-tile logo-tile--art size-10 rounded-[10px] mt-0.5">
                   <Image
                     src={project.image}
                     alt=""
