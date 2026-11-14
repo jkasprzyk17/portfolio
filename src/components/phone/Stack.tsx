@@ -15,6 +15,7 @@ import {
   useMotionValue,
   useReducedMotion,
   useTransform,
+  type MotionValue,
 } from "motion/react";
 import * as m from "motion/react-m";
 import { useBack } from "./nav";
@@ -33,6 +34,18 @@ export function useStack() {
   const api = useContext(StackContext);
   if (!api) throw new Error("useStack must be used inside <Stack>");
   return api;
+}
+
+/**
+ * What a screen's navigation bar needs to stay put while the screen under it
+ * slides: how far to shift back against its layer, and how much of it shows.
+ */
+export type LayerBar = { x: MotionValue<string>; fade: MotionValue<number> };
+const LayerBarContext = createContext<LayerBar | null>(null);
+
+/** The bar's share of a push or pop; null outside a stack. */
+export function useLayerBar() {
+  return useContext(LayerBarContext);
 }
 
 const SPRING = { type: "spring", stiffness: 340, damping: 36 } as const;
@@ -55,6 +68,22 @@ export default function Stack({ children }: { children: ReactNode }) {
   // further back rather than simply covered.
   const underX = useTransform(progress, (p) => `${-22 * p}%`);
   const shade = useTransform(progress, [0, 1], [0, 0.16]);
+
+  // The pages move; the bars don't. Each bar is shifted back by exactly what
+  // its layer has moved, so it stays where a bar belongs, and the incoming
+  // one fades in over the outgoing one in place: a back button appears where
+  // it will be pressed instead of riding in on the page.
+  const topBarX = useTransform(progress, (p) => `${(p - 1) * 100}%`);
+  const underBarX = useTransform(progress, (p) => `${22 * p}%`);
+  const topBarFade = useTransform(progress, [0.2, 1], [0, 1]);
+  const underBarFade = useTransform(progress, [0, 0.6], [1, 0]);
+  const bars = useMemo(
+    () => ({
+      top: { x: topBarX, fade: topBarFade },
+      under: { x: underBarX, fade: underBarFade },
+    }),
+    [topBarX, topBarFade, underBarX, underBarFade],
+  );
 
   const settle = useCallback(
     (to: 0 | 1, done?: () => void) => {
@@ -153,7 +182,11 @@ export default function Stack({ children }: { children: ReactNode }) {
                 x: role === "top" ? topX : role === "under" ? underX : "-22%",
               }}
             >
-              {screen}
+              <LayerBarContext.Provider
+                value={role === "buried" ? null : bars[role]}
+              >
+                {screen}
+              </LayerBarContext.Provider>
               {role === "under" && (
                 <m.span
                   aria-hidden

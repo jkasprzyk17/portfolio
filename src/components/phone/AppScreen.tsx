@@ -2,6 +2,8 @@
 
 import { useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import * as m from "motion/react-m";
+import { useLayerBar } from "./Stack";
 
 /**
  * The frame every app except the map draws itself in: a navigation bar (an
@@ -12,6 +14,9 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
  * content, and once it is out of sight the bar shows it small instead. Both
  * platforms do this; what differs is the bar, which CSS draws (buttons of
  * glass floating over the page on iOS, a solid strip on Android).
+ *
+ * Inside a Stack the bar also stays put while its page slides in or out,
+ * fading against the other page's bar (see Stack.tsx).
  */
 export default function AppScreen({
   title,
@@ -30,6 +35,12 @@ export default function AppScreen({
   // "scrolled": something is under the bar. "collapsed": the large title is,
   // so the bar has to say where you are.
   const [scroll, setScroll] = useState<"top" | "scrolled" | "collapsed">("top");
+  const layerBar = useLayerBar();
+  // In a stack, how much of the bar shows while its page is on the move. Put
+  // on each piece directly, not on the bar or through a CSS variable: a bar
+  // that isn't fully opaque would cut its glass buttons off from the page
+  // they blur, and a variable would restyle everything inside it each frame.
+  const fade = layerBar ? { opacity: layerBar.fade } : undefined;
 
   return (
     <div
@@ -37,28 +48,36 @@ export default function AppScreen({
       data-scrolled={scroll === "top" ? undefined : ""}
       data-collapsed={scroll === "collapsed" ? "" : undefined}
     >
-      <header className="scr__bar">
+      <m.header
+        className="scr__bar"
+        style={layerBar ? { x: layerBar.x } : undefined}
+      >
+        {/* The soft edge the page fades into under the bar (iOS only). */}
+        <m.span aria-hidden className="scr__edge" style={fade} />
         <div className="scr__lead">
           {back ? (
-            <button
+            <m.button
               type="button"
               className="scr__back"
+              style={fade}
               onClick={back.onClick}
               aria-label={`Back to ${back.label}`}
             >
               {/* A chevron on iOS, an arrow on Android; CSS shows one. */}
               <ChevronLeft size={20} aria-hidden className="scr__back-ios" />
               <ArrowLeft size={20} aria-hidden className="scr__back-android" />
-            </button>
+            </m.button>
           ) : null}
         </div>
         {/* The title again, for when the real one has scrolled away. Only
             for the eye: the heading below is the one that is read out. */}
-        <span aria-hidden className="scr__inline">
-          {title}
-        </span>
-        <div className="scr__actions">{actions}</div>
-      </header>
+        <m.span aria-hidden className="scr__mid" style={fade}>
+          <span className="scr__inline">{title}</span>
+        </m.span>
+        <m.div className="scr__actions" style={fade}>
+          {actions}
+        </m.div>
+      </m.header>
       <div
         className="scr__body"
         onScroll={(e) => {

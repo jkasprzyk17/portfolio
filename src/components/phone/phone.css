@@ -961,7 +961,11 @@
   height: 34px;
   border-radius: 50%;
   color: var(--fg);
-  transition: transform 240ms var(--ease-out);
+  transition: transform 160ms var(--ease-out);
+}
+/* The page's soft edge under the bar: drawn by the iOS skin, nothing here. */
+.scr__edge {
+  display: none;
 }
 /* Glass swells a little under the finger rather than shrinking. */
 .scr__back:active {
@@ -976,10 +980,14 @@
 .scr__back-android {
   display: none;
 }
-/* The title once the large one has scrolled under the bar. */
-.scr__inline {
+/* The title once the large one has scrolled under the bar. The outer span
+   is its place in the bar; the inner one comes and goes with the scroll. */
+.scr__mid {
   min-width: 0;
   text-align: center;
+}
+.scr__inline {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2062,9 +2070,13 @@ html:not([data-os="android"]) .maps__chips {
 }
 
 /* Under the bar the page doesn't stop at an edge: it goes soft and fades
-   out on its way up to the status bar, and the glass buttons sit on that. */
-html:not([data-os="android"]) :is(.scr__bar, .msg__bar)::before {
+   out on its way up to the status bar, and the glass buttons sit on that.
+   An element in an app's bar (so a stack can fade it with the bar's other
+   pieces), a pseudo-element in Messages. */
+html:not([data-os="android"]) .scr__edge,
+html:not([data-os="android"]) .msg__bar::before {
   content: "";
+  display: block;
   position: absolute;
   /* Fully soft down to the bar's lower edge, then letting go over the next
      24px: nothing behind the small title is sharp enough to read. */
@@ -2088,8 +2100,8 @@ html:not([data-os="android"]) .scr.cv .scr__bar {
   background: var(--bg-2);
   transition: box-shadow 200ms ease;
 }
-html:not([data-os="android"]) .scr.cv .scr__bar::before {
-  content: none;
+html:not([data-os="android"]) .scr.cv .scr__edge {
+  display: none;
 }
 html:not([data-os="android"]) .scr.cv[data-scrolled] .scr__bar {
   box-shadow: 0 1px 0 var(--line);
@@ -2242,9 +2254,11 @@ html[data-os="android"] .scr__lead,
 html[data-os="android"] .scr__actions {
   min-width: 0;
 }
-html[data-os="android"] .scr__inline {
+html[data-os="android"] .scr__mid {
   flex: 1;
   text-align: start;
+}
+html[data-os="android"] .scr__inline {
   font-size: 16px;
   font-weight: 500;
 }
@@ -2261,10 +2275,14 @@ html[data-os="android"] .scr__back {
   margin-left: -8px;
   padding: 6px 8px;
   border-radius: 8px;
+}
+html[data-os="android"] .scr__back-android {
   transition: opacity 150ms ease;
 }
 html[data-os="android"] .scr__back:active {
   transform: none;
+}
+html[data-os="android"] .scr__back:active .scr__back-android {
   opacity: 0.55;
 }
 /* A top app bar title rather than a large serif one. */
