@@ -136,7 +136,7 @@ export const experiences: ExperienceItem[] = [
       {
         name: "TapNote",
         url: "https://tapnote.app",
-        logo: "/images/tapnote-icon.png",
+        logo: "/images/tapnote-icon.webp",
         description:
           "AI-powered note-taking and study application available on iOS and Android. The app helps students and professionals organize their learning with intelligent AI assistance and interactive study tools.",
         features: [
@@ -184,7 +184,7 @@ export const experiences: ExperienceItem[] = [
       {
         name: "Radon IDE",
         url: "https://radon.swmansion.com/",
-        logo: "/images/radon-logo.png",
+        logo: "/images/radon-logo.webp",
         description:
           "Radon IDE is an innovative VSCode/Cursor extension that transforms standard code editors into fully-featured Integrated Development Environments specifically designed for React Native and Expo development. The extension provides comprehensive tooling, debugging capabilities, and workflow enhancements that streamline the mobile development process.",
         features: [
@@ -232,7 +232,7 @@ export const experiences: ExperienceItem[] = [
       {
         name: "MUGO",
         url: "https://mugo.pl",
-        logo: "/images/mugo-logo.png",
+        logo: "/images/mugo-logo.webp",
         description:
           "Global music distribution and artist promotion platform for independent artists. Enables musicians to distribute their music to major streaming platforms worldwide while providing powerful promotion tools and analytics.",
         features: [
@@ -256,7 +256,7 @@ export const experiences: ExperienceItem[] = [
       {
         name: "JustWin",
         url: "https://justwin.pl",
-        logo: "/images/justwin-logo.png",
+        logo: "/images/justwin-logo.webp",
         description:
           "Gamified mobile application featuring user engagement and challenge-based features. Creates an engaging experience through interactive challenges, rewards, and social competition.",
         features: [

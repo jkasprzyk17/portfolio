@@ -18,7 +18,7 @@ export const projects: Project[] = [
     id: "1",
     title: "Miniliga",
     category: "personal",
-    image: "/images/miniliga-icon.png",
+    image: "/images/miniliga-icon.webp",
     description:
       "Platform for managing amateur and semi-professional football leagues with both web and mobile applications. Streamlines league operations, team management, and provides real-time updates to players and organizers.",
     longDescription:
@@ -50,7 +50,7 @@ export const projects: Project[] = [
     id: "2",
     title: "Łatwa Ustna",
     category: "personal",
-    image: "/images/latwaustna-icon.png",
+    image: "/images/latwaustna-icon.webp",
     liveUrl: "https://latwaustna.pl/",
     description:
       "AI-powered training platform that helps Polish high school students prepare for the written and oral matura exam by simulating the exam commission and providing instant, criteria-based feedback.",

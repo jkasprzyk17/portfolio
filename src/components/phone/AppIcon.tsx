@@ -7,7 +7,7 @@ import type { AppIconDef } from "./apps";
 const adjust: Record<string, { ground?: string; scale?: number }> = {
   // Ships as a much rounder shape than the tile, on transparency. Its own
   // background colour fills the corners so it sits like the others.
-  "/images/radon-logo.png": { ground: "#effdf8" },
+  "/images/radon-logo.webp": { ground: "#effdf8" },
 };
 
 // Sized entirely in em, so the same markup is the 46px icon on the home
