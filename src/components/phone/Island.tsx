@@ -8,12 +8,8 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
+import { useTransform, type MotionValue } from "motion/react";
 import * as m from "motion/react-m";
-
-// A little bounce on the way out, none on the way back: the island reaches
-// for your attention and then just puts itself away.
-const GROW = { type: "spring", stiffness: 420, damping: 30 } as const;
-const SHRINK = { type: "spring", stiffness: 520, damping: 44 } as const;
 
 type Box = {
   /** The island at rest. */
@@ -22,53 +18,82 @@ type Box = {
   open: { w: number; h: number };
 };
 
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
 /**
  * A notification on the iOS skin. It doesn't drop in from off-screen: the
  * island itself grows into it and shrinks back when it's done, so this is
  * drawn as a second black shape that starts exactly over the resting one
  * (.island, which never moves) and returns to it before unmounting.
+ *
+ * It only draws: `open` (0 the island at rest, 1 holding the notification)
+ * comes from Banner.tsx, which also moves it. Past 1 the shape simply keeps
+ * growing, which is the spring's bounce and the give under a downward pull.
  */
 export default function IslandNotice({
   pill,
+  open,
+  range,
   reduced,
   onPointerDown,
   children,
 }: {
   /** The island at rest, to grow out of. */
   pill: RefObject<HTMLElement | null>;
+  open: MotionValue<number>;
+  /** Told here how far a finger travels to close it: its growth in height,
+      so pushing it up closes it at the finger's own speed. */
+  range: RefObject<number>;
   reduced: boolean;
   onPointerDown: PointerEventHandler;
   children: ReactNode;
 }) {
   const content = useRef<HTMLDivElement>(null);
-  const [box, setBox] = useState<Box | null>(null);
+  const box = useRef<Box | null>(null);
+  const [, setMeasured] = useState(false);
 
   // Before the first paint: until then the shape is the resting island (its
   // CSS says so), and the text is already laid out at its final width.
   // Layout offsets, not getBoundingClientRect, because the device may be
-  // tilted toward the cursor. Only the size is animated: the corner is one
-  // fixed radius in CSS, which a box too short for it wears as round ends.
+  // tilted toward the cursor. Only the size is driven from here: the corner
+  // is one fixed radius in CSS, which a box too short for it wears as round
+  // ends.
   useLayoutEffect(() => {
     const rest = pill.current;
     const text = content.current;
     if (!rest || !text) return;
-    setBox({
+    box.current = {
       rest: { w: rest.offsetWidth, h: rest.offsetHeight },
       open: { w: text.offsetWidth, h: text.offsetHeight },
-    });
-  }, [pill]);
+    };
+    range.current = Math.max(24, text.offsetHeight - rest.offsetHeight);
+    setMeasured(true);
+  }, [pill, range]);
 
-  // Reduced motion: it appears at full size where it is, and fades.
+  const width = useTransform(open, (p): number | string =>
+    box.current
+      ? lerp(box.current.rest.w, box.current.open.w, p)
+      : "var(--island-w)",
+  );
+  const height = useTransform(open, (p): number | string =>
+    box.current
+      ? lerp(box.current.rest.h, box.current.open.h, p)
+      : "var(--island-h)",
+  );
+  // The text arrives once there is room for it and is gone before the
+  // shape has closed over it.
+  const textOpacity = useTransform(open, [0.3, 0.85], [0, 1]);
+  const textBlur = useTransform(open, [0.3, 0.85], ["blur(5px)", "blur(0px)"]);
+  const textScale = useTransform(open, [0, 1], [0.94, 1]);
+
+  // Reduced motion: it is there at full size, and `open` is only its fade.
   if (reduced) {
     return (
       <m.div
         className="island-notice"
         data-still=""
         role="status"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
+        style={{ opacity: open }}
         onPointerDown={onPointerDown}
       >
         <div className="island-notice__content">{children}</div>
@@ -80,16 +105,7 @@ export default function IslandNotice({
     <m.div
       className="island-notice"
       role="status"
-      animate={
-        box
-          ? { width: box.open.w, height: box.open.h, transition: GROW }
-          : undefined
-      }
-      exit={
-        box
-          ? { width: box.rest.w, height: box.rest.h, transition: SHRINK }
-          : undefined
-      }
+      style={{ width, height }}
       onPointerDown={onPointerDown}
     >
       {/* The text keeps its final size and place throughout; the shape opens
@@ -97,18 +113,7 @@ export default function IslandNotice({
       <m.div
         ref={content}
         className="island-notice__content"
-        initial={{ opacity: 0, scale: 0.94, filter: "blur(5px)" }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          transition: { delay: 0.08, duration: 0.3, ease: [0.23, 1, 0.32, 1] },
-        }}
-        exit={{
-          opacity: 0,
-          filter: "blur(5px)",
-          transition: { duration: 0.12 },
-        }}
+        style={{ opacity: textOpacity, filter: textBlur, scale: textScale }}
       >
         {children}
       </m.div>

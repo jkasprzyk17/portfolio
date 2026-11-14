@@ -1839,6 +1839,8 @@
      they ease into this corner as it grows. */
   border-radius: max(0px, calc(var(--r) - var(--island-top)));
   background: var(--island-ink);
+  /* Its size is animated; nothing outside it needs laying out again. */
+  contain: layout;
   /* A hairline, so it still has an edge over a dark app. */
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.07),
