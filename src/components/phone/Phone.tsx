@@ -181,6 +181,14 @@ export default function Phone({
   const progress = useMotionValue(0);
   const homeScale = useTransform(progress, [0, 1], [1, 0.9]);
   const homeOpacity = useTransform(progress, [0, 0.85], [1, 0.2]);
+  // Once an app has come to rest over the whole screen, the home screen under
+  // it isn't drawn at all: nothing of it shows, and its dock is glass, which
+  // the browser would otherwise keep blurring behind the app on every frame.
+  // Hidden, not removed, so an icon can still be measured for the way back.
+  const covering = useMotionValue(0);
+  const homeVisibility = useTransform(covering, (v) =>
+    v ? "hidden" : "visible",
+  );
 
   // The device turns to face the cursor, like something you could pick up.
   // Mouse only, and only while the cursor is somewhere else: once it is over
@@ -542,7 +550,11 @@ export default function Phone({
               >
                 <m.div
                   className="home-screen"
-                  style={{ scale: homeScale, opacity: homeOpacity }}
+                  style={{
+                    scale: homeScale,
+                    opacity: homeOpacity,
+                    visibility: homeVisibility,
+                  }}
                   inert={active !== null || menu !== null}
                 >
                   <div className="widget">
@@ -563,6 +575,7 @@ export default function Phone({
                     getOrigin={getOrigin}
                     size={size}
                     progress={progress}
+                    covering={covering}
                     onClosed={closed}
                   >
                     <AppBoundary name={active.name}>

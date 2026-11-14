@@ -49,6 +49,7 @@ export default function AppWindow({
   getOrigin,
   size,
   progress,
+  covering,
   onClosed,
   children,
 }: {
@@ -58,6 +59,9 @@ export default function AppWindow({
   size: ScreenSize;
   /** 0 on the home screen, 1 with the app full-screen. Written here. */
   progress: MotionValue<number>;
+  /** 1 while the app is at rest over the whole screen, 0 as soon as it is
+      on the move again. Written here. */
+  covering: MotionValue<number>;
   onClosed: () => void;
   children: ReactNode;
 }) {
@@ -116,19 +120,21 @@ export default function AppWindow({
 
   const open = useCallback(() => {
     closing.current = false;
+    const arrived = () => covering.set(1);
     if (reduced) {
       x.set(0);
       y.set(0);
       scale.set(1);
-      animate(fade, 1, { duration: 0.2 });
+      animate(fade, 1, { duration: 0.2, onComplete: arrived });
       return;
     }
-    springTo({ x: 0, y: 0, scale: 1 });
-  }, [reduced, springTo, x, y, scale, fade]);
+    springTo({ x: 0, y: 0, scale: 1 }, arrived);
+  }, [reduced, springTo, x, y, scale, fade, covering]);
 
   const close = useCallback(() => {
     if (closing.current) return;
     closing.current = true;
+    covering.set(0);
     if (reduced) {
       animate(fade, 0, { duration: 0.15, onComplete: onClosed });
       return;
@@ -136,7 +142,7 @@ export default function AppWindow({
     // Re-measure: the icon may have moved since opening (resize, rotation).
     const o = (origin.current = getOrigin());
     springTo({ x: o.x, y: o.y, scale: o.w / size.w }, onClosed);
-  }, [reduced, springTo, getOrigin, size.w, onClosed, fade]);
+  }, [reduced, springTo, getOrigin, size.w, onClosed, fade, covering]);
 
   useEffect(() => {
     open();
@@ -153,8 +159,9 @@ export default function AppWindow({
     () => () => {
       running.current.forEach((a) => a.stop());
       progress.set(0);
+      covering.set(0);
     },
-    [progress],
+    [progress, covering],
   );
 
   // Swipe up from the home bar. The sheet's bottom edge follows the finger
@@ -166,6 +173,7 @@ export default function AppWindow({
     onStart: () => {
       if (reduced) return;
       closing.current = false;
+      covering.set(0);
       running.current.forEach((a) => a.stop());
       grab.current = { x: x.get(), y: y.get(), scale: scale.get() };
     },
