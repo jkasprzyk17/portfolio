@@ -27,8 +27,10 @@ import AppBoundary from "./AppBoundary";
 import AppIcon from "./AppIcon";
 import AppWindow, { type Rect, type ScreenSize } from "./AppWindow";
 import Banner, { type Notice } from "./Banner";
+import GithubWidget, { type GithubActivity } from "./GithubWidget";
 import IconMenu, { type Shortcut } from "./IconMenu";
 import { PhoneNavContext, createPhoneNav } from "./nav";
+import Widgets from "./Widgets";
 import WorkTimeline, { type TimelineRole } from "./WorkTimeline";
 import {
   dockApps,
@@ -151,12 +153,16 @@ function Clock() {
 
 export default function Phone({
   timeline,
+  github,
   shipped,
   shortcuts,
   merged,
 }: {
   /** The jobs drawn in the home-screen widget. */
   timeline: { roles: TimelineRole[]; builtAt: number };
+  /** The days drawn in the second widget; null when GitHub couldn't be read,
+      and then there is simply one widget. */
+  github: GithubActivity | null;
   shipped: ShippedAppDef[];
   /** Long-press shortcuts by app id. */
   shortcuts: Record<string, Shortcut[]>;
@@ -557,9 +563,12 @@ export default function Phone({
                   }}
                   inert={active !== null || menu !== null}
                 >
-                  <div className="widget">
-                    <WorkTimeline {...timeline} />
-                  </div>
+                  <Widgets>
+                    <div className="widget">
+                      <WorkTimeline {...timeline} />
+                    </div>
+                    {github && <GithubWidget {...github} />}
+                  </Widgets>
 
                   <div className="icons">{grid.map(icon)}</div>
 

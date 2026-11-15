@@ -350,6 +350,167 @@
   mask-image: linear-gradient(to right, #000 55%, transparent);
 }
 
+/* GitHub, a square per day. The same ink and accent as the timeline: no
+   contributions is a trace of the text colour, more is more of the accent. */
+.gh {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.4cqw;
+  font-size: clamp(9.5px, 3.4cqw, 11.5px);
+  line-height: 1.2;
+  color: var(--fg-2);
+  /* A widget gives a little under the finger, like an icon. */
+  transition: transform 160ms var(--ease-out);
+}
+.gh:active {
+  transform: scale(0.97);
+}
+.gh:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.gh__line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2cqw;
+  white-space: nowrap;
+}
+.gh__line b {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+/* The smallest the phone is drawn (a short laptop window) has no room for
+   the whole sentence beside "GitHub"; the number stands without its period
+   there. Every phone held in the hand is wider than this. */
+@container (max-width: 269px) {
+  .gh__period {
+    display: none;
+  }
+}
+.gh__where {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  color: var(--fg-3);
+}
+/* The months along the top, as the years are on the timeline. */
+.gh__months {
+  position: relative;
+  height: 1.2em;
+  margin-bottom: 0.25em;
+  font-size: 0.86em;
+  color: var(--fg-3);
+}
+.gh__months span {
+  position: absolute;
+  top: 0;
+}
+.gh__grid {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Drawn in from the past to today, after the timeline's bars. The resting
+     clip is spelled out because a shape can't be animated from "none". */
+  clip-path: inset(0);
+  animation: gh-in 700ms var(--ease-out) backwards;
+  animation-delay: 840ms;
+}
+@keyframes gh-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+.gh__l0 {
+  color: var(--fg);
+  opacity: 0.08;
+}
+.gh__l1,
+.gh__l2,
+.gh__l3,
+.gh__l4 {
+  color: var(--accent);
+}
+.gh__l1 {
+  opacity: 0.3;
+}
+.gh__l2 {
+  opacity: 0.52;
+}
+.gh__l3 {
+  opacity: 0.76;
+}
+
+/* More than one widget. A tall screen shows them one under the other. */
+.widgets {
+  position: relative;
+}
+.widgets__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4.5cqw;
+}
+.widgets__dots {
+  display: none;
+}
+/* A screen this squat (any phone in the hand: the browser's bars take the
+   height two widgets would need) gives them one place between them instead,
+   swiped sideways like pages. The browser's own scrolling, snapped, inside
+   the tile's corner. */
+@container (min-aspect-ratio: 1 / 2) {
+  .widgets__row {
+    flex-direction: row;
+    gap: calc(var(--edge) * 1cqw);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    border-radius: calc(var(--tile-r) * 1cqw);
+  }
+  .widgets__row::-webkit-scrollbar {
+    display: none;
+  }
+  .widgets__row > * {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+  /* Which one is showing: two dots in the gap above the icons, so nothing
+     moves to make room for them. */
+  .widgets__dots {
+    position: absolute;
+    inset: 100% 0 auto;
+    display: flex;
+    justify-content: center;
+    height: 6.5cqw;
+  }
+  .widgets__dots button {
+    display: grid;
+    place-items: center;
+    width: 4.2cqw;
+    color: var(--fg);
+  }
+  .widgets__dots button::before {
+    content: "";
+    width: 1.4cqw;
+    height: 1.4cqw;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.28;
+    transition: opacity 200ms ease;
+  }
+  .widgets__dots button[aria-current]::before {
+    opacity: 0.85;
+  }
+  .widgets__dots button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: 999px;
+  }
+}
+
 .icons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

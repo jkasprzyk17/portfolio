@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import Bio from "@/components/Bio";
 import Intro from "@/components/Intro";
 import SectionHeading from "@/components/SectionHeading";
 import TopBar from "@/components/TopBar";
 import OsToggle from "@/components/phone/OsToggle";
 import Phone from "@/components/phone/Phone";
+import type { GithubActivity } from "@/components/phone/GithubWidget";
 import "@/components/phone/phone.css";
 import Projects from "@/components/Projects";
 import OpenSource from "@/components/OpenSource";
@@ -17,7 +19,12 @@ import { libraries } from "@/data/libraries";
 import { projects } from "@/data/projects";
 import { contributions } from "@/data/contributions";
 import { contact } from "@/data/profile";
+import { fetchContributions } from "@/lib/github";
 import { display, mono } from "./fonts";
+
+// The home screen draws GitHub's calendar, so the page is rebuilt in the
+// background every three hours rather than once per deploy.
+export const revalidate = 10800;
 
 export const metadata: Metadata = {
   title: "Jakub Kasprzyk · Mobile Software Engineer",
@@ -103,6 +110,64 @@ const shippedApps = [
     .map((p) => ({ name: p.title, icon: p.image! })),
 ];
 
+// The second widget: the last weeks of GitHub's contribution calendar, shaped
+// here so the browser gets a string of digits and does no date arithmetic.
+const GITHUB_WEEKS = 33;
+const githubUrl = contact.socials.find((s) => s.label === "GitHub")!.href;
+async function phoneGithub(): Promise<GithubActivity | null> {
+  try {
+    const year = await fetchContributions(githubUrl.split("/").pop()!);
+    // Whole weeks, Sunday first, ending with the one today is in.
+    const weekday = (date: string) => new Date(`${date}T00:00:00Z`).getUTCDay();
+    const thisWeek = year.length - 1 - weekday(year[year.length - 1].date);
+    const drawn = year.slice(Math.max(0, thisWeek - (GITHUB_WEEKS - 1) * 7));
+    const weeks = Math.ceil(drawn.length / 7);
+
+    // A name over the week a month starts in, and over the first week if
+    // there is room before the next name. None so close to the right edge
+    // that it would run off the tile.
+    const months = drawn.flatMap((day, i) =>
+      day.date.endsWith("-01")
+        ? [
+            {
+              week: Math.floor(i / 7),
+              label: MONTHS[Number(day.date.slice(5, 7)) - 1],
+            },
+          ]
+        : [],
+    );
+    if ((months[0]?.week ?? weeks) >= 4) {
+      months.unshift({
+        week: 0,
+        label: MONTHS[Number(drawn[0].date.slice(5, 7)) - 1],
+      });
+    }
+
+    return {
+      // The whole year, not only the weeks drawn: the figure on the profile.
+      count: year.reduce((n, day) => n + day.count, 0).toLocaleString("en-US"),
+      weeks,
+      days: drawn.map((day) => day.level).join(""),
+      months: months.filter((m) => m.week <= weeks - 3),
+      href: githubUrl,
+    };
+  } catch (error) {
+    // While building, or in development: GitHub having a bad minute must not
+    // fail a deploy. The home screen has one widget until the next refresh.
+    if (
+      process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD ||
+      process.env.NODE_ENV !== "production"
+    ) {
+      console.warn("GitHub widget left out:", error);
+      return null;
+    }
+    // Refreshing a page that is already being served: failing keeps the last
+    // good one in place and Next tries again on the next visit, where
+    // returning nothing would publish the page without its widget.
+    throw error;
+  }
+}
+
 // Long-press shortcuts, by app id: the places each icon can take you without
 // opening the app. Links only, taken from the data.
 const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
@@ -171,7 +236,8 @@ const phoneModeInit = `(function() {
   }, 5000);
 })();`;
 
-export default function Home() {
+export default async function Home() {
+  const github = await phoneGithub();
   return (
     <main className={`home min-h-screen ${display.variable} ${mono.variable}`}>
       <script dangerouslySetInnerHTML={{ __html: phoneModeInit }} />
@@ -187,6 +253,7 @@ export default function Home() {
         <div className="js-only">
           <Phone
             timeline={phoneTimeline}
+            github={github}
             shipped={shippedApps}
             shortcuts={phoneShortcuts}
             merged={latestMerge}
