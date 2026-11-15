@@ -7,6 +7,7 @@ import TopBar from "@/components/TopBar";
 import OsToggle from "@/components/phone/OsToggle";
 import Phone from "@/components/phone/Phone";
 import type { GithubActivity } from "@/components/phone/GithubWidget";
+import type { GithubWeek } from "@/components/phone/LiveActivity";
 import "@/components/phone/phone.css";
 import Projects from "@/components/Projects";
 import OpenSource from "@/components/OpenSource";
@@ -110,11 +111,17 @@ const shippedApps = [
     .map((p) => ({ name: p.title, icon: p.image! })),
 ];
 
-// The second widget: the last weeks of GitHub's contribution calendar, shaped
-// here so the browser gets a string of digits and does no date arithmetic.
+// GitHub's contribution calendar, for two things on the phone: the second
+// widget (the last weeks of it) and the island's live activity (the last
+// seven days). Shaped here, so the browser gets a string of digits and a few
+// fractions and does no date arithmetic.
 const GITHUB_WEEKS = 33;
+const WEEKDAYS = "SMTWTFS";
 const githubUrl = contact.socials.find((s) => s.label === "GitHub")!.href;
-async function phoneGithub(): Promise<GithubActivity | null> {
+async function phoneGithub(): Promise<{
+  widget: GithubActivity;
+  week: GithubWeek | null;
+} | null> {
   try {
     const year = await fetchContributions(githubUrl.split("/").pop()!);
     // Whole weeks, Sunday first, ending with the one today is in.
@@ -143,13 +150,38 @@ async function phoneGithub(): Promise<GithubActivity | null> {
       });
     }
 
+    // The last seven days, today among them. Seven days rather than "today":
+    // GitHub dates them in UTC and this page can be a few hours old, which a
+    // week absorbs and a single day wouldn't. Each bar is a share of the
+    // week's own busiest day, not of the year's.
+    const last = year.slice(-7);
+    const sum = last.reduce((n, day) => n + day.count, 0);
+    const most = Math.max(...last.map((day) => day.count));
+
     return {
-      // The whole year, not only the weeks drawn: the figure on the profile.
-      count: year.reduce((n, day) => n + day.count, 0).toLocaleString("en-US"),
-      weeks,
-      days: drawn.map((day) => day.level).join(""),
-      months: months.filter((m) => m.week <= weeks - 3),
-      href: githubUrl,
+      widget: {
+        // The whole year, not only the weeks drawn: the figure on the profile.
+        count: year
+          .reduce((n, day) => n + day.count, 0)
+          .toLocaleString("en-US"),
+        weeks,
+        days: drawn.map((day) => day.level).join(""),
+        months: months.filter((m) => m.week <= weeks - 3),
+        href: githubUrl,
+      },
+      // A week with nothing in it is not an activity: the island stays plain.
+      week:
+        sum > 0
+          ? {
+              total: sum.toLocaleString("en-US"),
+              one: sum === 1,
+              days: last.map((day) => ({
+                share: Math.round((day.count / most) * 100) / 100,
+                day: WEEKDAYS[weekday(day.date)],
+              })),
+              href: githubUrl,
+            }
+          : null,
     };
   } catch (error) {
     // While building, or in development: GitHub having a bad minute must not
@@ -253,7 +285,8 @@ export default async function Home() {
         <div className="js-only">
           <Phone
             timeline={phoneTimeline}
-            github={github}
+            github={github?.widget ?? null}
+            live={github?.week ?? null}
             shipped={shippedApps}
             shortcuts={phoneShortcuts}
             merged={latestMerge}

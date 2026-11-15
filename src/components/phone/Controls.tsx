@@ -6,6 +6,8 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type PointerEvent as ReactPointerEvent,
+  type RefObject,
 } from "react";
 import {
   animate,
@@ -52,10 +54,14 @@ const IOS_TRAVEL = 140;
  */
 export default function Controls({
   blocked,
+  pull,
   onOpenChange,
 }: {
   /** Something else has the screen (a long-press menu): stay away. */
   blocked: boolean;
+  /** Given the handler that starts a pull, for anything else in the status
+      bar that a pull may begin on (Android's live activity chip). */
+  pull: RefObject<((e: ReactPointerEvent) => void) | null>;
   onOpenChange: (open: boolean) => void;
 }) {
   const os = useOs();
@@ -143,6 +149,12 @@ export default function Controls({
       settle(to, velocity.y / range.current);
     },
   });
+  useEffect(() => {
+    pull.current = pan.onPointerDown;
+    return () => {
+      pull.current = null;
+    };
+  }, [pull, pan.onPointerDown]);
   // A pull ends in a click too; only a real tap should do anything.
   const tapped = () => {
     if (!pan.dragged.current) return true;
@@ -171,8 +183,12 @@ export default function Controls({
         aria-expanded={shown}
         onPointerDown={pan.onPointerDown}
         onClick={(e) => {
+          // From the keyboard there was no press, so no pull to mistake it
+          // for: whatever the last pull left behind doesn't count.
+          const fromKeyboard = e.detail === 0;
+          if (fromKeyboard) pan.dragged.current = false;
           if (!tapped() || blocked) return;
-          viaKeyboard.current = e.detail === 0;
+          viaKeyboard.current = fromKeyboard;
           settle(shown && open.get() > 0.5 ? 0 : 1);
         }}
       />

@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
   useRef,
   type MouseEvent,
+  type ReactNode,
   type RefObject,
 } from "react";
 import {
@@ -25,14 +26,23 @@ import { usePan } from "./usePan";
 
 export type Notice = {
   id: string;
-  /** Whose notification it is: icon and name. */
-  app: AppDef;
-  title: string;
-  body: string;
-  when: string;
   /** A notification that leads somewhere outside the phone. */
   href?: string;
-};
+} & (
+  | {
+      /** Whose notification it is: icon and name. */
+      app: AppDef;
+      title: string;
+      body: string;
+      when: string;
+    }
+  | {
+      /** Not a message from an app: something drawn as given, held the same
+          way. A live activity, opened (see LiveActivity.tsx). */
+      content: ReactNode;
+      app?: undefined;
+    }
+);
 
 const HIDE_AFTER = 6500;
 // After it has been held and let go: time to finish reading, not a fresh
@@ -195,7 +205,9 @@ function NoticeView({
     return false;
   };
 
-  const content = (
+  const content = !notice.app ? (
+    notice.content
+  ) : (
     <>
       <AppIcon icon={notice.app.icon} style={{ fontSize: 34 }} />
       <span className="banner__text">

@@ -30,6 +30,7 @@ import Banner, { type Notice } from "./Banner";
 import Controls from "./Controls";
 import GithubWidget, { type GithubActivity } from "./GithubWidget";
 import IconMenu, { type Shortcut } from "./IconMenu";
+import { LiveDetail, LiveIsland, type GithubWeek } from "./LiveActivity";
 import { PhoneNavContext, createPhoneNav } from "./nav";
 import Widgets from "./Widgets";
 import WorkTimeline, { type TimelineRole } from "./WorkTimeline";
@@ -155,6 +156,7 @@ function Clock() {
 export default function Phone({
   timeline,
   github,
+  live,
   shipped,
   shortcuts,
   merged,
@@ -164,6 +166,9 @@ export default function Phone({
   /** The days drawn in the second widget; null when GitHub couldn't be read,
       and then there is simply one widget. */
   github: GithubActivity | null;
+  /** The last seven of those days, held in the island; null when GitHub
+      couldn't be read or the week was empty, and then the island is plain. */
+  live: GithubWeek | null;
   shipped: ShippedAppDef[];
   /** Long-press shortcuts by app id. */
   shortcuts: Record<string, Shortcut[]>;
@@ -430,8 +435,43 @@ export default function Phone({
 
   const activateNotice = (n: Notice) => {
     setNotice(null);
-    if (!active) open(n.app);
+    if (!active && n.app) open(n.app);
   };
+
+  // ── Live activity ─────────────────────────────────────────────────────
+  // A tap on what the island is holding opens the island on it, the way it
+  // opens on a notification, and by the same means: it becomes the notice,
+  // so how long it stays, a push that sends it away and what each skin does
+  // with it are all Banner's. Whoever taps it has found out the phone works.
+  const liveRef = useRef<HTMLButtonElement>(null);
+  const liveOpen = notice?.id === "live";
+  const liveKeyboard = useRef(false);
+  const expandLive = (viaKeyboard: boolean) => {
+    if (!live) return;
+    markSeen("invite");
+    liveKeyboard.current = viaKeyboard;
+    setNotice({
+      id: "live",
+      href: live.href,
+      content: <LiveDetail week={live} />,
+    });
+  };
+  // A notification takes no focus, but this was asked for: opened from the
+  // keyboard, focus goes into it and comes back out when it shuts.
+  useEffect(() => {
+    if (!liveKeyboard.current) return;
+    if (liveOpen) {
+      screenRef.current
+        ?.querySelector<HTMLElement>(".banner__hit")
+        ?.focus({ preventScroll: true });
+    } else {
+      liveKeyboard.current = false;
+      liveRef.current?.focus({ preventScroll: true });
+    }
+  }, [liveOpen]);
+  // On Android it is a chip in the status bar, and a pull that starts on it
+  // is still a pull on the status bar (see Controls).
+  const pull = useRef<((e: ReactPointerEvent) => void) | null>(null);
 
   // ── Long press ────────────────────────────────────────────────────────
   // The click that follows a long press belongs to the press, not to the
@@ -497,7 +537,7 @@ export default function Phone({
     setControls(open);
     if (!open) return;
     markSeen("invite");
-    setNotice((n) => (n?.id === "invite" ? null : n));
+    setNotice((n) => (n?.id === "invite" || n?.id === "live" ? null : n));
   }, []);
 
   // ── Back ──────────────────────────────────────────────────────────────
@@ -508,11 +548,12 @@ export default function Phone({
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (menu) closeMenu();
+      else if (liveOpen) setNotice(null);
       else nav.back();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [menu, nav, closeMenu]);
+  }, [menu, nav, closeMenu, liveOpen]);
 
   const icon = (app: AppDef, i: number) => (
     <button
@@ -568,6 +609,7 @@ export default function Phone({
                 ref={screenRef}
                 className="screen"
                 data-app-open={active ? "" : undefined}
+                data-live={live ? "" : undefined}
               >
                 <m.div
                   className="home-screen"
@@ -632,6 +674,7 @@ export default function Phone({
 
                 <Controls
                   blocked={menu !== null}
+                  pull={pull}
                   onOpenChange={controlsChanged}
                 />
 
@@ -662,6 +705,20 @@ export default function Phone({
                     does, while a notification fills the island around it. */}
                 <span ref={islandRef} aria-hidden className="island" />
                 <span aria-hidden className="island__lens" />
+                {live && (
+                  <LiveIsland
+                    ref={liveRef}
+                    week={live}
+                    expanded={liveOpen}
+                    disabled={controls || menu !== null || notice !== null}
+                    onExpand={expandLive}
+                    onPull={(e) => {
+                      if (document.documentElement.dataset.os === "android") {
+                        pull.current?.(e);
+                      }
+                    }}
+                  />
+                )}
                 <m.span
                   aria-hidden
                   className="device__glare"
