@@ -50,6 +50,7 @@ export default function AppWindow({
   size,
   progress,
   covering,
+  inert,
   onClosed,
   children,
 }: {
@@ -62,6 +63,8 @@ export default function AppWindow({
   /** 1 while the app is at rest over the whole screen, 0 as soon as it is
       on the move again. Written here. */
   covering: MotionValue<number>;
+  /** Something is over the whole screen (the controls): hands off. */
+  inert: boolean;
   onClosed: () => void;
   children: ReactNode;
 }) {
@@ -205,6 +208,7 @@ export default function AppWindow({
       role="dialog"
       aria-label={app.name}
       tabIndex={-1}
+      inert={inert}
       style={{ x, y, scale, clipPath, opacity: fade, originX: 0, originY: 0 }}
     >
       <m.div className="app__body" style={{ opacity: bodyOpacity }}>

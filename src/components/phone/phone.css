@@ -2485,3 +2485,216 @@ html[data-os="android"] .install {
 html[data-os="android"] .menu {
   border-radius: 26px;
 }
+
+/* ───────────── Controls ───────────── */
+/* Control Centre on iOS, the quick settings shade on Android: one panel and
+   the same two switches (see Controls.tsx), given each platform's shape
+   here. */
+
+/* Where a pull starts, and the button that opens it without one. On iOS the
+   corner to the right of the island; on Android the whole status bar. No app
+   has a control of its own this high. */
+.controls-grab {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 29;
+  width: 36%;
+  height: 42px;
+  /* Pulling it down is its own gesture, not a page scroll. */
+  touch-action: none;
+}
+html[data-os="android"] .controls-grab {
+  width: 100%;
+}
+.controls-grab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -5px;
+  border-radius: 14px;
+}
+
+/* Over everything but the status bar and a notification, the Android
+   buttons included: a tap anywhere outside the switches puts it away. */
+.controls {
+  position: absolute;
+  inset: 0;
+  z-index: 27;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(10px, 3.5cqw, 12px);
+  line-height: 1.2;
+  touch-action: none;
+}
+/* What was on screen goes soft behind it. The only blur here: the switches
+   are plain translucent tiles on top of it, with no backdrop of their own. */
+.controls__scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg-2) 40%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  backdrop-filter: blur(22px) saturate(1.6);
+}
+.controls__panel {
+  position: absolute;
+  inset: 58px calc(var(--edge) * 1cqw) auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.4cqw;
+}
+
+.ctl {
+  color: var(--fg);
+  /* Changing skin with the panel open reshapes these in place. */
+  transition:
+    border-radius 240ms var(--ease-out),
+    background-color 200ms ease,
+    color 200ms ease;
+}
+.ctl--theme,
+.ctl--skin button {
+  transition:
+    transform 160ms var(--ease-out),
+    border-radius 240ms var(--ease-out),
+    background-color 200ms ease,
+    color 200ms ease;
+}
+.ctl--theme:active,
+.ctl--skin button:active {
+  transform: scale(0.97);
+}
+.ctl--theme:focus-visible,
+.ctl--skin button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.ctl__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.ctl__icon svg {
+  width: 1.55em;
+  height: 1.55em;
+}
+.ctl__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  min-width: 0;
+  text-align: start;
+}
+.ctl__name {
+  font-weight: 600;
+}
+.ctl__state {
+  opacity: 0.62;
+}
+
+/* iOS: two square modules of glass. */
+html:not([data-os="android"]) .ctl {
+  aspect-ratio: 1 / 0.9;
+  border-radius: calc(var(--tile-r) * 1cqw);
+  background: color-mix(in srgb, #fff 56%, transparent);
+  box-shadow:
+    inset 0 0 0 0.5px color-mix(in srgb, #fff 70%, transparent),
+    0 10px 24px -16px rgba(40, 30, 10, 0.5);
+}
+:root[data-theme="dark"]:not([data-os="android"]) .ctl {
+  background: color-mix(in srgb, #fff 11%, transparent);
+  box-shadow:
+    inset 0 0 0 0.5px color-mix(in srgb, #fff 16%, transparent),
+    0 10px 24px -16px rgba(0, 0, 0, 0.6);
+}
+html:not([data-os="android"]) .ctl--theme {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 4.2cqw;
+}
+/* The glyph sits in a disc that fills in when the switch is on. */
+html:not([data-os="android"]) .ctl__icon {
+  width: 11.5cqw;
+  height: 11.5cqw;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--fg) 11%, transparent);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+html:not([data-os="android"]) .ctl--theme[aria-pressed="true"] .ctl__icon {
+  background: #fff;
+  color: #17140f;
+}
+/* The skin: two choices filling the module, the one in use lit. Their corner
+   is the module's less the gap around them. */
+html:not([data-os="android"]) .ctl--skin {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2cqw;
+  padding: 3cqw;
+}
+html:not([data-os="android"]) .ctl--skin button {
+  flex: 1;
+  border-radius: calc((var(--tile-r) - 3) * 1cqw);
+  font-weight: 600;
+  color: var(--fg-2);
+}
+html:not([data-os="android"]) .ctl--skin button[aria-pressed="true"] {
+  background: #fff;
+  color: #17140f;
+  box-shadow: 0 2px 8px -4px rgba(40, 30, 10, 0.5);
+}
+:root[data-theme="dark"]:not([data-os="android"])
+  .ctl--skin
+  button[aria-pressed="true"] {
+  background: color-mix(in srgb, #fff 24%, transparent);
+  color: var(--fg);
+  box-shadow: none;
+}
+
+/* Android: a sheet from the top edge with two rows of pill tiles on it, and
+   a plain dimming of what is behind instead of a blur. */
+html[data-os="android"] .controls__scrim {
+  background: rgba(0, 0, 0, 0.42);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-os="android"] .controls__panel {
+  inset: 0 0 auto;
+  gap: 2.6cqw;
+  padding: 54px calc(var(--edge) * 1cqw) 6.5cqw;
+  border-radius: 0 0 9cqw 9cqw;
+  background: var(--bg);
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.6);
+}
+:root[data-theme="dark"][data-os="android"] .controls__panel {
+  background: #1e1d1a;
+}
+html[data-os="android"] .ctl {
+  height: 17cqw;
+}
+html[data-os="android"] .ctl--theme,
+html[data-os="android"] .ctl--skin button {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fg) 9%, transparent);
+}
+html[data-os="android"] .ctl--theme {
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+  padding: 0 5cqw;
+}
+html[data-os="android"] .ctl--skin {
+  display: flex;
+  gap: 1.6cqw;
+}
+html[data-os="android"] .ctl--skin button {
+  flex: 1;
+  font-weight: 500;
+}
+/* A tile that is on takes the accent, as a Material tile does. */
+html[data-os="android"] .ctl--theme[aria-pressed="true"],
+html[data-os="android"] .ctl--skin button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #fff;
+}

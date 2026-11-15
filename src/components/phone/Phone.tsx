@@ -27,6 +27,7 @@ import AppBoundary from "./AppBoundary";
 import AppIcon from "./AppIcon";
 import AppWindow, { type Rect, type ScreenSize } from "./AppWindow";
 import Banner, { type Notice } from "./Banner";
+import Controls from "./Controls";
 import GithubWidget, { type GithubActivity } from "./GithubWidget";
 import IconMenu, { type Shortcut } from "./IconMenu";
 import { PhoneNavContext, createPhoneNav } from "./nav";
@@ -487,17 +488,31 @@ export default function Phone({
     window.addEventListener("pointercancel", stopWatching);
   };
 
+  // ── Controls ──────────────────────────────────────────────────────────
+  // Control Centre / the quick settings shade. While it is down, everything
+  // under it is out of reach; and whoever pulls it has found out the phone
+  // works, so the invitation goes, as it does when an app or a menu opens.
+  const [controls, setControls] = useState(false);
+  const controlsChanged = useCallback((open: boolean) => {
+    setControls(open);
+    if (!open) return;
+    markSeen("invite");
+    setNotice((n) => (n?.id === "invite" ? null : n));
+  }, []);
+
   // ── Back ──────────────────────────────────────────────────────────────
+  // Esc is "back": whatever is deepest answers (the controls, a pushed
+  // screen, the app), and with nothing open nobody does.
   const nav = useMemo(createPhoneNav, []);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (menu) closeMenu();
-      else if (active) nav.back();
+      else nav.back();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [menu, active, nav, closeMenu]);
+  }, [menu, nav, closeMenu]);
 
   const icon = (app: AppDef, i: number) => (
     <button
@@ -561,7 +576,7 @@ export default function Phone({
                     opacity: homeOpacity,
                     visibility: homeVisibility,
                   }}
-                  inert={active !== null || menu !== null}
+                  inert={active !== null || menu !== null || controls}
                 >
                   <Widgets>
                     <div className="widget">
@@ -585,6 +600,7 @@ export default function Phone({
                     size={size}
                     progress={progress}
                     covering={covering}
+                    inert={controls}
                     onClosed={closed}
                   >
                     <AppBoundary name={active.name}>
@@ -613,6 +629,11 @@ export default function Phone({
                 </AnimatePresence>
 
                 <AndroidNav />
+
+                <Controls
+                  blocked={menu !== null}
+                  onOpenChange={controlsChanged}
+                />
 
                 <Banner
                   notice={notice}

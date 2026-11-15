@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Github, Linkedin, Twitter, Sun, Moon } from "lucide-react";
+import { toggleTheme } from "@/lib/theme";
 
 const socials = [
   { label: "GitHub", href: "https://github.com/jkasprzyk17", Icon: Github },
@@ -15,15 +16,8 @@ const socials = [
 
 export default function TopBar() {
   // The theme lives only on <html data-theme>: the toggle reads it at click
-  // time and the icons follow it in CSS (.icon-swap), so there is no React
-  // copy to sync and no wrong icon before hydration.
-  const toggle = () => {
-    const root = document.documentElement;
-    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-  };
-
+  // time (lib/theme.ts) and the icons follow it in CSS (.icon-swap), so
+  // there is no React copy to sync and no wrong icon before hydration.
   return (
     <header className="sticky top-0 z-50 bg-bg/80 backdrop-blur-md border-b hairline">
       <div className="max-w-[72rem] mx-auto px-5 sm:px-8 flex items-center justify-between h-14">
@@ -59,7 +53,7 @@ export default function TopBar() {
           ))}
           <button
             type="button"
-            onClick={toggle}
+            onClick={toggleTheme}
             aria-label="Toggle theme"
             className="hover:text-fg transition-colors"
           >
